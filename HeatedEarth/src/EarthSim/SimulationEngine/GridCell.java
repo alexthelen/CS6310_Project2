@@ -1,4 +1,4 @@
-package SimulationEngine;
+package EarthSim.SimulationEngine;
 
 public class GridCell 
 {

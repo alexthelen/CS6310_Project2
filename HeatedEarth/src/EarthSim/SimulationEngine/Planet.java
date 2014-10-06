@@ -1,4 +1,4 @@
-package SimulationEngine;
+package EarthSim.SimulationEngine;
 import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.GregorianCalendar;
