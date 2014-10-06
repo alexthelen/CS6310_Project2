@@ -186,6 +186,9 @@ public class MainWindow extends javax.swing.JFrame {
 		});
 	}
 
+	/**
+	 * Validates user input on the form
+	 */
 	private boolean validateInput() {
 
 		// Check valid input
@@ -223,6 +226,11 @@ public class MainWindow extends javax.swing.JFrame {
 
 	}
 
+	/**
+	 * Checks if string is a valid integer value
+	 * 
+	 * @param intString a {@code String} containing the input to be validated
+	 */
 	private boolean isValidInt(String intString) {
 
 		try {
