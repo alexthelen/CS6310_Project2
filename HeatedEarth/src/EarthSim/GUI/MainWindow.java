@@ -13,6 +13,12 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JPanel;
+
+import EarthSim.Presentation.Presentation;
+
+import cs6310.gui.widget.earth.EarthPanel;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -40,84 +46,57 @@ public class MainWindow extends javax.swing.JFrame {
         setMaximumSize(new Dimension(800, 600));
         setMinimumSize(new Dimension(800, 600));
         setPreferredSize(new Dimension(800, 600));
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[]{137, 60, 51, 195, 75, 80, 40, 32, 16, 75, 0};
-        gridBagLayout.rowHeights = new int[]{436, 28, 30, 0};
-        gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-        getContentPane().setLayout(gridBagLayout);
+        
+        getContentPane().setLayout(null);
+        
+        presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
+        presentation.getEarthPanel().setBounds(5, 0, 800, 515);
+        getContentPane().add(presentation.getEarthPanel());
+        
+        
+//        panel = new JPanel();
+//        panel.setBounds(0, 0, 800, 515);
+//        panel.setLayout(null);
+        
+//        getContentPane().add(panel);
         jLabel1 = new javax.swing.JLabel();
+        jLabel1.setBounds(59, 521, 83, 16);
+        jLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
         
                 jLabel1.setText("Grid Spacing:");
-                GridBagConstraints gbc_jLabel1 = new GridBagConstraints();
-                gbc_jLabel1.anchor = GridBagConstraints.EAST;
-                gbc_jLabel1.insets = new Insets(0, 0, 5, 5);
-                gbc_jLabel1.gridx = 0;
-                gbc_jLabel1.gridy = 1;
-                getContentPane().add(jLabel1, gbc_jLabel1);
+                getContentPane().add(jLabel1);
         tfGridSpacing = new javax.swing.JTextField();
-        GridBagConstraints gbc_tfGridSpacing = new GridBagConstraints();
-        gbc_tfGridSpacing.anchor = GridBagConstraints.NORTH;
-        gbc_tfGridSpacing.fill = GridBagConstraints.HORIZONTAL;
-        gbc_tfGridSpacing.insets = new Insets(0, 0, 5, 5);
-        gbc_tfGridSpacing.gridx = 1;
-        gbc_tfGridSpacing.gridy = 1;
-        getContentPane().add(tfGridSpacing, gbc_tfGridSpacing);
+        tfGridSpacing.setBounds(147, 515, 55, 28);
+        getContentPane().add(tfGridSpacing);
         jLabel4 = new javax.swing.JLabel();
+        jLabel4.setBounds(207, 521, 49, 16);
         
                 jLabel4.setText("degrees");
-                GridBagConstraints gbc_jLabel4 = new GridBagConstraints();
-                gbc_jLabel4.anchor = GridBagConstraints.WEST;
-                gbc_jLabel4.insets = new Insets(0, 0, 5, 5);
-                gbc_jLabel4.gridx = 2;
-                gbc_jLabel4.gridy = 1;
-                getContentPane().add(jLabel4, gbc_jLabel4);
+                getContentPane().add(jLabel4);
         jLabel3 = new javax.swing.JLabel();
+        jLabel3.setBounds(494, 521, 164, 16);
         
                 jLabel3.setText("Presentation Display Rate:");
-                GridBagConstraints gbc_jLabel3 = new GridBagConstraints();
-                gbc_jLabel3.anchor = GridBagConstraints.EAST;
-                gbc_jLabel3.insets = new Insets(0, 0, 5, 5);
-                gbc_jLabel3.gridwidth = 3;
-                gbc_jLabel3.gridx = 4;
-                gbc_jLabel3.gridy = 1;
-                getContentPane().add(jLabel3, gbc_jLabel3);
+                getContentPane().add(jLabel3);
         tfDisplayRate = new javax.swing.JTextField();
-        GridBagConstraints gbc_tfDisplayRate = new GridBagConstraints();
-        gbc_tfDisplayRate.anchor = GridBagConstraints.NORTH;
-        gbc_tfDisplayRate.fill = GridBagConstraints.HORIZONTAL;
-        gbc_tfDisplayRate.insets = new Insets(0, 0, 5, 0);
-        gbc_tfDisplayRate.gridwidth = 2;
-        gbc_tfDisplayRate.gridx = 8;
-        gbc_tfDisplayRate.gridy = 1;
-        getContentPane().add(tfDisplayRate, gbc_tfDisplayRate);
+        tfDisplayRate.setBounds(695, 515, 105, 28);
+        getContentPane().add(tfDisplayRate);
         jLabel2 = new javax.swing.JLabel();
+        jLabel2.setBounds(0, 555, 137, 16);
+        jLabel2.setHorizontalAlignment(SwingConstants.RIGHT);
         
                 jLabel2.setText("Simulation Time Step:");
-                GridBagConstraints gbc_jLabel2 = new GridBagConstraints();
-                gbc_jLabel2.anchor = GridBagConstraints.WEST;
-                gbc_jLabel2.insets = new Insets(0, 0, 0, 5);
-                gbc_jLabel2.gridx = 0;
-                gbc_jLabel2.gridy = 2;
-                getContentPane().add(jLabel2, gbc_jLabel2);
+                getContentPane().add(jLabel2);
         tfTimeStep = new javax.swing.JTextField();
-        GridBagConstraints gbc_tfTimeStep = new GridBagConstraints();
-        gbc_tfTimeStep.anchor = GridBagConstraints.NORTH;
-        gbc_tfTimeStep.fill = GridBagConstraints.HORIZONTAL;
-        gbc_tfTimeStep.insets = new Insets(0, 0, 0, 5);
-        gbc_tfTimeStep.gridx = 1;
-        gbc_tfTimeStep.gridy = 2;
-        getContentPane().add(tfTimeStep, gbc_tfTimeStep);
+        tfTimeStep.setBounds(147, 548, 55, 28);
+        getContentPane().add(tfTimeStep);
         jLabel5 = new javax.swing.JLabel();
+        jLabel5.setBounds(207, 555, 51, 16);
         
                 jLabel5.setText("minutes");
-                GridBagConstraints gbc_jLabel5 = new GridBagConstraints();
-                gbc_jLabel5.anchor = GridBagConstraints.WEST;
-                gbc_jLabel5.insets = new Insets(0, 0, 0, 5);
-                gbc_jLabel5.gridx = 2;
-                gbc_jLabel5.gridy = 2;
-                getContentPane().add(jLabel5, gbc_jLabel5);
+                getContentPane().add(jLabel5);
         btnStart = new javax.swing.JButton();
+        btnStart.setBounds(458, 549, 75, 29);
         btnStart.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		
@@ -128,13 +107,9 @@ public class MainWindow extends javax.swing.JFrame {
         });
         
                 btnStart.setLabel("Start");
-                GridBagConstraints gbc_btnStart = new GridBagConstraints();
-                gbc_btnStart.anchor = GridBagConstraints.SOUTHWEST;
-                gbc_btnStart.insets = new Insets(0, 0, 0, 5);
-                gbc_btnStart.gridx = 4;
-                gbc_btnStart.gridy = 2;
-                getContentPane().add(btnStart, gbc_btnStart);
+                getContentPane().add(btnStart);
         btnPause = new javax.swing.JButton();
+        btnPause.setBounds(538, 549, 80, 29);
         btnPause.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         	
@@ -143,13 +118,9 @@ public class MainWindow extends javax.swing.JFrame {
         });
         
                 btnPause.setText("Pause");
-                GridBagConstraints gbc_btnPause = new GridBagConstraints();
-                gbc_btnPause.anchor = GridBagConstraints.SOUTHWEST;
-                gbc_btnPause.insets = new Insets(0, 0, 0, 5);
-                gbc_btnPause.gridx = 5;
-                gbc_btnPause.gridy = 2;
-                getContentPane().add(btnPause, gbc_btnPause);
+                getContentPane().add(btnPause);
         btnRestart = new javax.swing.JButton();
+        btnRestart.setBounds(623, 549, 88, 29);
         btnRestart.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         	
@@ -160,14 +131,9 @@ public class MainWindow extends javax.swing.JFrame {
         });
         
                 btnRestart.setText("Restart");
-                GridBagConstraints gbc_btnRestart = new GridBagConstraints();
-                gbc_btnRestart.anchor = GridBagConstraints.SOUTHWEST;
-                gbc_btnRestart.insets = new Insets(0, 0, 0, 5);
-                gbc_btnRestart.gridwidth = 3;
-                gbc_btnRestart.gridx = 6;
-                gbc_btnRestart.gridy = 2;
-                getContentPane().add(btnRestart, gbc_btnRestart);
+                getContentPane().add(btnRestart);
         btnStop = new javax.swing.JButton();
+        btnStop.setBounds(725, 549, 75, 29);
         btnStop.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         	
@@ -176,11 +142,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         
                 btnStop.setText("Stop");
-                GridBagConstraints gbc_btnStop = new GridBagConstraints();
-                gbc_btnStop.anchor = GridBagConstraints.SOUTHWEST;
-                gbc_btnStop.gridx = 9;
-                gbc_btnStop.gridy = 2;
-                getContentPane().add(btnStop, gbc_btnStop);
+                getContentPane().add(btnStop);
 
         pack();
     }// </editor-fold>                        
@@ -238,5 +200,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTextField tfDisplayRate;
     private javax.swing.JTextField tfGridSpacing;
     private javax.swing.JTextField tfTimeStep;
+    private JPanel panel;
+    private EarthPanel earthPanel;
+    private Presentation presentation;
     // End of variables declaration                   
 }
