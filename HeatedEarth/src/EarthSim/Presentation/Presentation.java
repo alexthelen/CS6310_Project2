@@ -80,6 +80,11 @@ public class Presentation implements Runnable {
 	 * Stay idle as long as the there is no task at hand
 	 */
 	private void idle() {
-		//TODO: implement this
+		while (_stayIdle) {
+			try {
+				Thread.sleep(IDLE_TIME);
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 }
