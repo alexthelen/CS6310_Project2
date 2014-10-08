@@ -146,4 +146,186 @@ public class GridCellTest {
 		}
 	}
 
+	@Test
+	public void testNorthHemisphereGetNeighbors() 
+	{
+		try
+		{
+			GridCell cell = new GridCell(20, 0);
+			
+			int[] north = cell.GetNorthNeighborCoordinates();
+			int[] south = cell.GetSouthNeighborCoordinates();
+			int[] east = cell.GetEastNeighborCoordinates();
+			int[] west = cell.GetWestNeighborCoordinates();
+			
+			assertArrayEquals(new int[] {30,0}, north);
+			assertArrayEquals(new int[] {10,0}, south);
+			assertArrayEquals(new int[] {20,10}, east);
+			assertArrayEquals(new int[] {20,-10}, west);
+		}
+		catch (Exception ex)
+		{
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	public void testSouthHemisphereGetNeighbors() 
+	{
+		try
+		{
+			GridCell cell = new GridCell(-20, 0);
+			
+			int[] north = cell.GetNorthNeighborCoordinates();
+			int[] south = cell.GetSouthNeighborCoordinates();
+			int[] east = cell.GetEastNeighborCoordinates();
+			int[] west = cell.GetWestNeighborCoordinates();
+			
+			assertArrayEquals(new int[] {-10,0}, north);
+			assertArrayEquals(new int[] {-30,0}, south);
+			assertArrayEquals(new int[] {-20,10}, east);
+			assertArrayEquals(new int[] {-20,-10}, west);
+		}
+		catch (Exception ex)
+		{
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	public void testEastHemisphereGetNeighbors() 
+	{
+		try
+		{
+			GridCell cell = new GridCell(0, 20);
+			
+			int[] north = cell.GetNorthNeighborCoordinates();
+			int[] south = cell.GetSouthNeighborCoordinates();
+			int[] east = cell.GetEastNeighborCoordinates();
+			int[] west = cell.GetWestNeighborCoordinates();
+			
+			assertArrayEquals(new int[] {10,20}, north);
+			assertArrayEquals(new int[] {-10,20}, south);
+			assertArrayEquals(new int[] {0,30}, east);
+			assertArrayEquals(new int[] {0,10}, west);
+		}
+		catch (Exception ex)
+		{
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	public void testWestHemisphereGetNeighbors() 
+	{
+		try
+		{
+			GridCell cell = new GridCell(0, -20);
+			
+			int[] north = cell.GetNorthNeighborCoordinates();
+			int[] south = cell.GetSouthNeighborCoordinates();
+			int[] east = cell.GetEastNeighborCoordinates();
+			int[] west = cell.GetWestNeighborCoordinates();
+			
+			assertArrayEquals(new int[] {10,-20}, north);
+			assertArrayEquals(new int[] {-10,-20}, south);
+			assertArrayEquals(new int[] {0,-10}, east);
+			assertArrayEquals(new int[] {0,-30}, west);
+		}
+		catch (Exception ex)
+		{
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	public void testNorthPoleGetNeighbors() 
+	{
+		try
+		{
+			GridCell cell = new GridCell(80, 0);
+			
+			int[] north = cell.GetNorthNeighborCoordinates();
+			int[] south = cell.GetSouthNeighborCoordinates();
+			int[] east = cell.GetEastNeighborCoordinates();
+			int[] west = cell.GetWestNeighborCoordinates();
+			
+			assertArrayEquals(new int[] {80,-180}, north);
+			assertArrayEquals(new int[] {70,0}, south);
+			assertArrayEquals(new int[] {80,10}, east);
+			assertArrayEquals(new int[] {80,-10}, west);
+		}
+		catch (Exception ex)
+		{
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	public void testSouthPoleGetNeighbors() 
+	{
+		try
+		{
+			GridCell cell = new GridCell(-80, 0);
+			
+			int[] north = cell.GetNorthNeighborCoordinates();
+			int[] south = cell.GetSouthNeighborCoordinates();
+			int[] east = cell.GetEastNeighborCoordinates();
+			int[] west = cell.GetWestNeighborCoordinates();
+			
+			assertArrayEquals(new int[] {-70,0}, north);
+			assertArrayEquals(new int[] {-80,-180}, south);
+			assertArrayEquals(new int[] {-80,10}, east);
+			assertArrayEquals(new int[] {-80,-10}, west);
+		}
+		catch (Exception ex)
+		{
+			fail(ex.getMessage());
+		}
+	}
+	
+	public void testEastIDLGetNeighbors() 
+	{
+		try
+		{
+			GridCell cell = new GridCell(20, 170);
+			
+			int[] north = cell.GetNorthNeighborCoordinates();
+			int[] south = cell.GetSouthNeighborCoordinates();
+			int[] east = cell.GetEastNeighborCoordinates();
+			int[] west = cell.GetWestNeighborCoordinates();
+			
+			assertArrayEquals(new int[] {30,170}, north);
+			assertArrayEquals(new int[] {10,170}, south);
+			assertArrayEquals(new int[] {20,-180}, east);
+			assertArrayEquals(new int[] {20,160}, west);
+		}
+		catch (Exception ex)
+		{
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	public void testWestIDLPoleGetNeighbors() 
+	{
+		try
+		{
+			GridCell cell = new GridCell(20, -170);
+			
+			int[] north = cell.GetNorthNeighborCoordinates();
+			int[] south = cell.GetSouthNeighborCoordinates();
+			int[] east = cell.GetEastNeighborCoordinates();
+			int[] west = cell.GetWestNeighborCoordinates();
+			
+			assertArrayEquals(new int[] {30,-170}, north);
+			assertArrayEquals(new int[] {10,-170}, south);
+			assertArrayEquals(new int[] {20,-160}, east);
+			assertArrayEquals(new int[] {20,180}, west);
+		}
+		catch (Exception ex)
+		{
+			fail(ex.getMessage());
+		}
+	}
 }
