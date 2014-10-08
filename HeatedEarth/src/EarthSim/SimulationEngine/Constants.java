@@ -3,8 +3,8 @@ package EarthSim.SimulationEngine;
 public class Constants 
 {
 	public final static int rotationPerHour = 15;	//Degrees
-	public final static int gridLatitudeSize = 1;	//Degrees
-	public final static int gridLongitudeSize = 1;	//Degrees
+	public final static int gridLatitudeSize = 10;	//Degrees
+	public final static int gridLongitudeSize = 10;	//Degrees
 	public final static int tempChangeAtNoonAndMidnight = 5;	//Kelvin
 	public final static double earthRadius = 6378;	//Kilometers
 	public final static double distanceBetweenLatitudeLines = 111;	//Kilometers

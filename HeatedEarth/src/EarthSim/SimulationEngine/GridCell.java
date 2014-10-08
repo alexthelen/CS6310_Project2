@@ -50,8 +50,8 @@ public class GridCell
 		}
 		else
 		{
-			this.southBaseLength = this.CalculateBase(this.latitude + Constants.gridLatitudeSize);//2 = .41 //25 = .99
-			this.northBaseLength = this.CalculateBase(this.latitude);//1 = .54
+			this.southBaseLength = this.CalculateBase(this.latitude - Constants.gridLatitudeSize);
+			this.northBaseLength = this.CalculateBase(this.latitude);
 		}
 		
 		this.eastWestLength = this.CalculateLegs();
@@ -144,10 +144,11 @@ public class GridCell
 		return this.CalculateHeight() * (this.southBaseLength + this.northBaseLength) / 2;
 	}
 	
-	private double CalculateBase(int latitude)
+	private double CalculateBase(int lat)
 	{
-		latitude = Math.abs(latitude);
-		double circumference = 2 * Math.PI * Constants.earthRadius * Math.cos(latitude);
+		lat = Math.abs(lat);
+		double radians = lat * Math.PI / 180;
+		double circumference = 2 * Math.PI * Constants.earthRadius * Math.cos(radians);
 		return circumference / (360 / Constants.gridLongitudeSize);
 	}
 	
@@ -158,7 +159,13 @@ public class GridCell
 	
 	private double CalculateLegs()
 	{
-		double x = (this.northBaseLength - this.southBaseLength) / 2;
+		double x;
+		
+		if(this.northBaseLength >= this.southBaseLength)
+			x = (this.northBaseLength - this.southBaseLength) / 2;
+		else
+			x = (this.southBaseLength - this.northBaseLength) / 2;
+		
 		return Math.sqrt(Math.pow(x, 2) + Math.pow(this.height, 2));
 	}
 	
