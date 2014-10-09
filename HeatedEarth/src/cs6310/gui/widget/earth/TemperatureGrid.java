@@ -16,8 +16,8 @@ public interface TemperatureGrid {
   public double getTemperature(int x, int y);
   
   /**
-   * Gets the height of the cell at the specified coordinates
+   * Gets the length of the vertical dimension of the grid.
    */
-  public float getCellHeight(int x, int y);
+  public int getLatitudeLength();
   
 }
