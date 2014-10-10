@@ -43,16 +43,8 @@ public class GridCell
 		this.temp = 288;
 		this.height = this.CalculateHeight();
 		
-		if(this.latitude >= 0)
-		{
-			this.southBaseLength = this.CalculateBase(this.latitude);
-			this.northBaseLength = this.CalculateBase(this.latitude + Constants.gridLatitudeSize);
-		}
-		else
-		{
-			this.southBaseLength = this.CalculateBase(this.latitude - Constants.gridLatitudeSize);
-			this.northBaseLength = this.CalculateBase(this.latitude);
-		}
+		this.southBaseLength = this.CalculateBase(this.latitude);
+		this.northBaseLength = this.CalculateBase(this.latitude + Constants.gridLatitudeSize);
 		
 		this.eastWestLength = this.CalculateLegs();
 		this.surfaceArea = this.CalculateSurfaceArea();
@@ -112,7 +104,7 @@ public class GridCell
 		int eastLatitude= this.latitude;
 		int eastLongitude;
 		
-		if(this.longitude + Constants.gridLongitudeSize == 180)
+		if(this.longitude + Constants.gridLongitudeSize > 180)
 			eastLongitude = -180;
 		else
 			eastLongitude = this.longitude + Constants.gridLongitudeSize;
@@ -125,7 +117,7 @@ public class GridCell
 		int westLatitude= this.latitude;
 		int westLongitude;
 		
-		if(this.longitude - Constants.gridLongitudeSize == -180)
+		if(this.longitude - Constants.gridLongitudeSize <= -180)
 			westLongitude = 180;
 		else
 			westLongitude = this.longitude - Constants.gridLongitudeSize;

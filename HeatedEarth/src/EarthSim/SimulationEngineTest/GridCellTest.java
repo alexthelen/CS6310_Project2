@@ -35,7 +35,7 @@ public class GridCellTest {
 	}
 	
 	@Test
-	public void tesEastLongitude() 
+	public void testEastLongitude() 
 	{
 		 try
 		 {
@@ -91,7 +91,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(-20, 0);
+			GridCell cell = new GridCell(-30, 0);
 			
 			assertEquals(1046.038, cell.GetNorthBaseLength(), 0.01);
 			assertEquals(964.034, cell.GetSouthBaseLength(), 0.01);
@@ -131,7 +131,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(-80, 0);
+			GridCell cell = new GridCell(-90, 0);
 			
 			assertEquals(193.300, cell.GetNorthBaseLength(), 0.01);
 			assertEquals(0.0, cell.GetSouthBaseLength(), 0.01);
