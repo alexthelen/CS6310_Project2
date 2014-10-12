@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
+
 import javax.swing.JPanel;
 
 /**
@@ -12,13 +13,40 @@ import javax.swing.JPanel;
  * be used to update the grid are given package level access - these methods should be interacted with 
  * from the {@link EarthPanel}.
  * 
+ * 
+ * 
  * @author Andrew Bernard
+ * @author Pablo Gallastegui
+ * 
+ * @version 1.1
+ * 
  */
 public class EarthGridDisplay extends JPanel {
   private static final long serialVersionUID = -1108120968981962997L;
   private static final float OPACITY = 0.75f;  
   private static final int DEFAULT_CELL_TEMP = 15; //degrees in celsius
   private TemperatureColorPicker colorPicker = TemperatureColorPicker.getInstance();
+  
+  /**
+   * Deprecated properties storing display data originated from
+   * the previous TemperatureGrid interface
+   */
+  @SuppressWarnings("unused")
+  @Deprecated
+  private int degreeSeparation;
+  @SuppressWarnings("unused")
+  @Deprecated
+  private int pixelsPerCellX; //number of pixels per latitudal division
+  @SuppressWarnings("unused")
+  @Deprecated
+  private int pixelsPerCellY; //number of pixels per longitudal division
+  @SuppressWarnings("unused")
+  @Deprecated
+  private int numCellsX;
+  @SuppressWarnings("unused")
+  @Deprecated
+  private int numCellsY;
+
   
   private BufferedImage imgTransparent;
   private BufferedImage earthImage;
@@ -38,6 +66,7 @@ public int getRadius() {
 }
 
 /**
+ * <CTOR>
    * Constructs a display grid with a default grid spacing.
    * 
    * @param defaultGridPacing in degrees
@@ -129,6 +158,7 @@ public int getRadius() {
         g.fillRect(Math.round(cellX), Math.round(cellY), Math.round(cellWidth), Math.round(cellHeight));
         cellY += cellHeight;
         
+        // Store the vertical coordinate for the latitude lines
         if (first) {
         	lineY[y] = this.radius - (int)distToEquator;
         }
@@ -136,12 +166,14 @@ public int getRadius() {
       if (first) {
       	first = !first;
       }
+      // draw the longitude line
       g.setColor(Color.black);
       g.drawLine((int)cellX, 0, (int)cellX, imgHeight); 
       cellX += cellWidth;
       cellY = 0;
     }
 
+    // draw the latitude lines
     g.setColor(Color.black);
     for (int line : lineY) {
         g.drawLine(0, line, imgWidth, line);

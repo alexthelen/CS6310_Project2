@@ -7,6 +7,9 @@ package cs6310.gui.widget.earth;
  * coordinates (x, y) in an <code>x by y</code> grid with x columns and y rows.
  * 
  * @author Andrew Bernard
+ * @author Pablo Gallastegui
+ * 
+ * @version 1.1
  */
 public interface TemperatureGrid {
   
@@ -25,4 +28,11 @@ public interface TemperatureGrid {
    */
   public int getLongitudeLength();
   
+  /**
+   * Moved responsibility to calculate the height in pixels of the cell
+   * to {@link EarthGridDisplay}
+   * 
+   * public float getCellHeight(int x, int y);
+   */
+
 }

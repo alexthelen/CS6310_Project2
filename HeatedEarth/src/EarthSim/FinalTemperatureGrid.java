@@ -3,8 +3,6 @@
  */
 package EarthSim;
 
-import java.util.Random;
-
 import cs6310.gui.widget.earth.TemperatureGrid;
 
 /**

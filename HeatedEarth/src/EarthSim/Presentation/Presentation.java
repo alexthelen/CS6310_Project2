@@ -11,7 +11,11 @@ import cs6310.gui.widget.earth.EarthPanel;
 import cs6310.gui.widget.earth.TemperatureGrid;
 
 /**
- * @author pablo
+ * Class to display and update an {@link EarthPanel} in its own thread.
+ * 
+ * @author Pablo Gallastegui
+ *
+ * @version 1.0
  *
  */
 public class Presentation implements Runnable {
@@ -21,7 +25,7 @@ public class Presentation implements Runnable {
 	private final EarthPanel _earthPanel;
 	
 	/**
-	 * @return the EarthPanel
+	 * @return the {@link EarthPanel} being displayed
 	 */
 	public EarthPanel getEarthPanel() {
 		return _earthPanel;
@@ -67,27 +71,12 @@ public class Presentation implements Runnable {
 	}
 	
 	/**
+	 * Updates the temperature grid begin displayed
 	 * 
+	 * @param grid 	the {@link TemperatureGrid} to be displayed in the map
 	 */
 	public void updateGrid(TemperatureGrid grid) {
-		_stayIdle = false;
-		double height = this.getEarthPanel().getSize().getHeight();
-		
-		double angleIncrement = 180.0 / grid.getLatitudeLength();
-		
-		double previousHeightCos = 0;
-		
-		for (int i = 1; i < grid.getLatitudeLength() / 2; i++) {
-			double currentAngle = angleIncrement * i;
-			double cos = Math.cos(Math.toRadians(currentAngle));
-			double currentHeightCos = 1 - cos;
-			double currentHeightCoefficient = previousHeightCos - currentHeightCos;
-
-			System.out.println("current angle: " + currentAngle + ", Cos: " + cos + ", Current height coefficient: " + currentHeightCoefficient * 500);
-			
-			previousHeightCos = currentHeightCos;
-		}
-		
+		_stayIdle = false;		
 		_earthPanel.updateGrid(grid);
 		presentationComplete();
 		_stayIdle = true;
