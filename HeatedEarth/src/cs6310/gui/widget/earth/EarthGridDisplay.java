@@ -24,18 +24,20 @@ public class EarthGridDisplay extends JPanel {
   private BufferedImage earthImage;
   private float[] scales = { 1f, 1f, 1f, OPACITY }; //last index controls the transparency
   private float[] offsets = new float[4];
-  private int degreeSeparation;
-  private int pixelsPerCellX; //number of pixels per latitudal division
-  private int pixelsPerCellY; //number of pixels per longitudal division
   private int imgWidth; // in pixels
   private int imgHeight; // in pixels
-  private int numCellsX;
-  private int numCellsY;
-  private int radius;
+  private int radius; // in pixels
   private boolean paintInitialColors = true;
   private TemperatureGrid grid;
   
   /**
+ * @return the radius
+ */
+public int getRadius() {
+	return radius;
+}
+
+/**
    * Constructs a display grid with a default grid spacing.
    * 
    * @param defaultGridPacing in degrees
@@ -44,6 +46,7 @@ public class EarthGridDisplay extends JPanel {
     earthImage = new EarthImage().getBufferedImage();    
     setGranularity(defaultGridPacing);
     setIgnoreRepaint(true);
+    radius = imgHeight/2;
   }
   
   /**
@@ -53,16 +56,8 @@ public class EarthGridDisplay extends JPanel {
    * between the cells in the grid
    */
   void setGranularity(int degreeSeparation) {
-    this.degreeSeparation = degreeSeparation;
-    
-    numCellsX = 360 / degreeSeparation;      
-    pixelsPerCellX = earthImage.getWidth() / numCellsX;
-    imgWidth = numCellsX * pixelsPerCellX;
-
-    numCellsY = 180 / degreeSeparation;
-    pixelsPerCellY = earthImage.getHeight() / numCellsY;
-    imgHeight = numCellsY * pixelsPerCellY;
-    radius = imgHeight/2;
+    imgWidth = earthImage.getWidth();
+    imgHeight = earthImage.getHeight();
     
     //create an image capable of transparency; then draw our image into it
     imgTransparent = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
@@ -95,15 +90,6 @@ public class EarthGridDisplay extends JPanel {
     paintInitialColors = false;    
     this.repaint();
   }
-  
-  /**
-   * Gets the radius of the earth.
-   * 
-   * @return the radius of the earth in pixels
-   */
-  int getRadius() {
-    return radius;
-  }
 
   /**
    * This is used implicitly by swing to do it's layout job properly
@@ -113,22 +99,52 @@ public class EarthGridDisplay extends JPanel {
   }
   
   private void fillCellColors(Graphics g) {
-    int cellX=0, cellY=0;
-    int cellWidth = pixelsPerCellX;
+	float cellX=0, cellY=0;
+    float cellWidth = earthImage.getWidth() / (float)this.grid.getLongitudeLength();
+    float degreeSeparation = 180 / this.grid.getLatitudeLength();
     
-    for (int x = 0; x < numCellsX; x++) {      
-      for (int y = 0; y < numCellsY; y++) {
+    int latitude = 0;
+    float previousHeight = 0;
+    
+    int[] lineY = new int[this.grid.getLatitudeLength()];
+    boolean first = true;
+    
+    for (int x = 0; x < this.grid.getLongitudeLength(); x++) {
+      previousHeight = 0; 
+      for (int y = 0; y < this.grid.getLatitudeLength(); y++) {
+    	latitude = 90 - (int)(degreeSeparation * (y + 1));
+    	  
         double newTemp = grid.getTemperature(x, y);
         int colorValue = new Double(newTemp).intValue();
-        int cellHeight = (int)grid.getCellHeight(x, y);
         
+        float distToEquator = Util.getDistToEquator(latitude, this.imgHeight / 2);
+        
+        float cellHeight = this.radius - distToEquator - previousHeight;
+        
+        cellHeight = Math.abs(cellHeight);
+        
+        previousHeight += cellHeight;
+                
         g.setColor(colorPicker.getColor(colorValue));
-        g.fillRect(cellX, cellY, cellWidth, cellHeight);
+        g.fillRect(Math.round(cellX), Math.round(cellY), Math.round(cellWidth), Math.round(cellHeight));
         cellY += cellHeight;
-//        System.out.print("\n["+x+", "+y+"] color: " + colorValue);
+        
+        if (first) {
+        	lineY[y] = this.radius - (int)distToEquator;
+        }
       }      
+      if (first) {
+      	first = !first;
+      }
+      g.setColor(Color.black);
+      g.drawLine((int)cellX, 0, (int)cellX, imgHeight); 
       cellX += cellWidth;
       cellY = 0;
+    }
+
+    g.setColor(Color.black);
+    for (int line : lineY) {
+        g.drawLine(0, line, imgWidth, line);
     }
   }
   
@@ -140,19 +156,6 @@ public class EarthGridDisplay extends JPanel {
   
   private void drawGrid(Graphics g) {
     g.setColor(Color.black);
-    
-    //draw longitude lines
-    for(int x = 0; x <= imgWidth; x += pixelsPerCellX) {
-      g.drawLine(x, 0, x, imgHeight);      
-    }
-    
-    //draw scaled latitude lines
-    for(int lat = 0; lat <= 90; lat += degreeSeparation) {
-      int y = (int)Util.getDistToEquator(lat, radius);
-      g.drawLine(0, radius-y, imgWidth, radius-y);
-      g.drawLine(0, radius+y, imgWidth, radius+y);
-    }
-    
     g.setColor(Color.blue);
     g.drawLine(imgWidth/2, 0, imgWidth/2, imgHeight); //prime meridian
     g.drawLine(0, imgHeight/2, imgWidth, imgHeight/2); // equator

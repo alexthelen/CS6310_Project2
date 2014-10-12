@@ -20,4 +20,9 @@ public interface TemperatureGrid {
    */
   public int getLatitudeLength();
   
+  /**
+   * Gets the length of the vertical dimension of the grid.
+   */
+  public int getLongitudeLength();
+  
 }

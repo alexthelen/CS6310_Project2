@@ -71,7 +71,25 @@ public class Presentation implements Runnable {
 	 */
 	public void updateGrid(TemperatureGrid grid) {
 		_stayIdle = false;
+		double height = this.getEarthPanel().getSize().getHeight();
+		
+		double angleIncrement = 180.0 / grid.getLatitudeLength();
+		
+		double previousHeightCos = 0;
+		
+		for (int i = 1; i < grid.getLatitudeLength() / 2; i++) {
+			double currentAngle = angleIncrement * i;
+			double cos = Math.cos(Math.toRadians(currentAngle));
+			double currentHeightCos = 1 - cos;
+			double currentHeightCoefficient = previousHeightCos - currentHeightCos;
+
+			System.out.println("current angle: " + currentAngle + ", Cos: " + cos + ", Current height coefficient: " + currentHeightCoefficient * 500);
+			
+			previousHeightCos = currentHeightCos;
+		}
+		
 		_earthPanel.updateGrid(grid);
+		presentationComplete();
 		_stayIdle = true;
 		idle();
 	}
