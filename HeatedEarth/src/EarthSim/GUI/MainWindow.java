@@ -6,6 +6,7 @@
 
 package EarthSim.GUI;
 import java.awt.Dimension;
+
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
 import javax.swing.JOptionPane;
@@ -15,11 +16,12 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JPanel;
 
 import EarthSim.Presentation.Presentation;
+import EarthSim.Presentation.earth.EarthPanel;
 
-import cs6310.gui.widget.earth.EarthPanel;
 import javax.swing.SwingConstants;
 
 /**

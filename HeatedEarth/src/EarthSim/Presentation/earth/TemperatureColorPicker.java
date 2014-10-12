@@ -1,4 +1,4 @@
-package cs6310.gui.widget.earth;
+package EarthSim.Presentation.earth;
 
 import java.awt.Color;
 

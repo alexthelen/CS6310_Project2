@@ -1,4 +1,4 @@
-package cs6310.gui.widget.earth;
+package EarthSim.Presentation.earth;
 
 /**
  * Provides utility functions for geometric calculations related to the earth

@@ -7,8 +7,8 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
-import cs6310.gui.widget.earth.EarthPanel;
-import cs6310.gui.widget.earth.TemperatureGrid;
+import EarthSim.Presentation.earth.EarthPanel;
+import EarthSim.Presentation.earth.TemperatureGrid;
 
 /**
  * Class to display and update an {@link EarthPanel} in its own thread.

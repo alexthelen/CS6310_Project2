@@ -3,7 +3,7 @@
  */
 package EarthSim;
 
-import cs6310.gui.widget.earth.TemperatureGrid;
+import EarthSim.Presentation.earth.TemperatureGrid;
 
 /**
  * @author pablo

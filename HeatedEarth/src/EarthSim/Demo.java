@@ -14,8 +14,8 @@ import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import cs6310.gui.widget.earth.EarthPanel;
-import cs6310.gui.widget.earth.TemperatureGrid;
+import EarthSim.Presentation.earth.EarthPanel;
+import EarthSim.Presentation.earth.TemperatureGrid;
 
 /**
  * @author pablo
