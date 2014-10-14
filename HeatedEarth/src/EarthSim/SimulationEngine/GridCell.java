@@ -80,7 +80,7 @@ public class GridCell
 		int southLatitude;
 		int southLongitude;
 		
-		if(this.latitude - Constants.gridLatitudeSize == -90)
+		if(this.latitude - Constants.gridLatitudeSize < -90)
 		{
 			southLatitude = this.latitude;
 			
@@ -117,8 +117,8 @@ public class GridCell
 		int westLatitude= this.latitude;
 		int westLongitude;
 		
-		if(this.longitude - Constants.gridLongitudeSize <= -180)
-			westLongitude = 180;
+		if(this.longitude - Constants.gridLongitudeSize < -180)
+			westLongitude = 170;
 		else
 			westLongitude = this.longitude - Constants.gridLongitudeSize;
 		

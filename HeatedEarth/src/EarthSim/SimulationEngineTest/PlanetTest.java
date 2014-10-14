@@ -76,9 +76,16 @@ public class PlanetTest {
 		try 
 		{
 			Planet earth = new Planet();
+			GridCell cell;
 			earth.ApplyHeatChange();
 			
+			cell = earth.GetGridCell(0, 0);		
+			assertEquals(288.0, cell.GetTemp(), 0.01);
+			assertEquals(0, cell.GetTemp(), 0.01);	
 			
+			cell = earth.GetGridCell(0, 180);
+			assertEquals(288.0, cell.GetTemp(), 0.01);
+			assertEquals(0, cell.GetTemp(), 0.01);
 		} 
 		catch (Exception e) 
 		{

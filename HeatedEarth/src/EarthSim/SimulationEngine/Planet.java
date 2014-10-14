@@ -9,16 +9,21 @@ public class Planet
 	private Calendar IDLDateTime;
 	private GridCell[][] planetGrid;
 	private int noonLongitude;
+	private int rows;
+	private int columns;
 	
 	//Accessors---------------------------
 	public Calendar GetIDLDateTime(){ return this.IDLDateTime; }
 	
 	//Constructors------------------------
-	public Planet() throws Exception
+	public Planet() throws Exception	//Refactor to pass grid size here (only need 1 not 2 seperate for lat and long)
 	{
 		this.IDLDateTime = new GregorianCalendar(2000, 1, 1, 0, 0, 0);
 		this.noonLongitude = 0;
-		this.planetGrid = new GridCell[this.CalculatePlanetGridX()][this.CalculatePlanetGridY()];
+		this.rows = 180 / Constants.gridLatitudeSize;
+		this.columns = 360 / Constants.gridLongitudeSize;
+		this.planetGrid = new GridCell[this.rows][this.columns];
+		
 		this.InitializeGrid();
 	}
 	
@@ -32,24 +37,33 @@ public class Planet
 	public void ApplyHeatChange() throws Exception
 	{
 		GridCell operationCell;
+		double avgGridTemp = 0;
+		double solarTemp;
+		double heatLoss;
+		double newTemp;
 		
-		for(int i = -90; i <= 90; i+=Constants.gridLatitudeSize)
+		for(int i = -90; i < 90; i+=Constants.gridLatitudeSize)
 		{
-			for(int j = -180; j <= 180; j+=Constants.gridLongitudeSize)
+			for(int j = -180; j < 180; j+=Constants.gridLongitudeSize)
 			{
 				operationCell = this.GetGridCell(i, j);
 				operationCell.SetOldTemp(operationCell.GetTemp());
+				avgGridTemp += operationCell.GetTemp();
 			}
 		}
 		
-		for(int i = -90; i <= 90; i+=Constants.gridLatitudeSize)
+		avgGridTemp /= (this.rows * this.columns);
+		
+		for(int i = -90; i < 90; i+=Constants.gridLatitudeSize)
 		{
-			for(int j = -180; j <= 180; j+=Constants.gridLongitudeSize)
+			for(int j = -180; j < 180; j+=Constants.gridLongitudeSize)
 			{
 				operationCell = this.GetGridCell(i, j);
 				
-				this.RadiateSun(operationCell);
-				this.LoseHeatToSpace(operationCell);
+				solarTemp = this.RadiateSun(operationCell);
+				heatLoss = this.LoseHeatToSpace(operationCell, solarTemp, avgGridTemp);
+				newTemp = operationCell.GetTemp() + solarTemp + heatLoss;
+				operationCell.SetTemp(newTemp);
 				this.DiffuseHeat(operationCell);
 			}
 		}
@@ -73,12 +87,10 @@ public class Planet
 	{
 		int latitude = -90;
 		int longitude = -180;
-		int gridLength = this.CalculatePlanetGridX();
-		int gridHeight = this.CalculatePlanetGridY();
 		
-		for(int i = 0; i < gridLength; i++)
+		for(int i = 0; i < this.rows; i++)
 		{
-			for(int j = 0; j < gridHeight; j++)
+			for(int j = 0; j < this.columns; j++)
 			{
 				GridCell newCell = new GridCell(latitude, longitude);
 				this.planetGrid[i][j] = newCell;
@@ -89,7 +101,7 @@ public class Planet
 		}
 	}
 	
-	private void DiffuseHeat(GridCell cell)
+	public void DiffuseHeat(GridCell cell)
 	{
 		int[] neighbor = cell.GetNorthNeighborCoordinates();
 		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], 180);
@@ -99,68 +111,55 @@ public class Planet
 		neighbor = cell.GetSouthNeighborCoordinates();
 		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], 180);
 		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], 360);
-		double southWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetNorthBaseLength(), cell);
+		double southWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetSouthBaseLength(), cell);
 		
 		neighbor = cell.GetEastNeighborCoordinates();
 		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], 180);
 		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], 360);
-		double eastWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetNorthBaseLength(), cell);
+		double eastWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetEastLength(), cell);
 		
 		neighbor = cell.GetWestNeighborCoordinates();
 		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], 180);
 		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], 360);
-		double westWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetNorthBaseLength(), cell);
+		double westWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetWestLength(), cell);
 		
 		double newTemp = northWeight + southWeight + eastWeight + westWeight;
 		cell.SetTemp(newTemp);
 	}
 	
-	private void RadiateSun(GridCell cell)
+	public double RadiateSun(GridCell cell)
 	{
-		//Check that time of day is factored in. If the cell does not face the sun it does not receive any heat
-		double heatFactor = this.CalculateHeatFactor(cell);
-		double tempChange = heatFactor * this.CalculateSolarTemperature(cell);
-		cell.SetTemp(cell.GetTemp() + tempChange);
-	}
-	
-	private void LoseHeatToSpace(GridCell cell)
-	{
-		//Check that time of day is factored in. If the cell faces the sun it does not lose heat
-		double heatFactor = this.CalculateHeatFactor(cell);
-		double tempChange = heatFactor * this.CalculateSolarTemperature(cell);
-		cell.SetTemp(cell.GetTemp() - tempChange);
-	}
-	
-	private double CalculateHeatFactor(GridCell cell)
-	{
+		double tempSun;
+		double longitudeFactor;
+		int latitudeAbs;
+		double latitudeFactor;
+		double solarTemp = Math.pow((1 - Constants.aldebo) * Constants.solarEnergy / (4 * Constants.emissivity * Constants.stefanBoltzmannConstant), 1.0/4);
+		double heatFactor = 0;
 		int longitudeDifference = Math.abs(cell.GetLongitude() - this.noonLongitude);
-		double longitudeFactor = Math.cos(longitudeDifference);
-		int latitudeAbs = Math.abs(cell.GetLatitude());
-		double latitudeFactor = Math.cos(latitudeAbs);
 		
-		return longitudeFactor * latitudeFactor;
+		if(longitudeDifference < 90)
+		{
+			longitudeFactor = Math.cos(longitudeDifference);
+			latitudeAbs = Math.abs(cell.GetLatitude());
+			latitudeFactor = Math.cos(latitudeAbs);
+			heatFactor = longitudeFactor * latitudeFactor;
+		}
+		
+		tempSun = heatFactor * solarTemp;
+		return tempSun;
 	}
 	
-	private double CalculateSolarTemperature(GridCell cell)
-	{
-		double sa = cell.GetSurfaceArea() * 1000000;	//surface area stored in square km we will do calculation with meters
-		double temp = Math.pow(Constants.solarEnergy / sa * Constants.stefanBoltzmannConstant, -4);
-		return temp;
+	public double LoseHeatToSpace(GridCell cell, double solarTemp, double avgGridTemp)
+	{		
+		double avgGridCellSize = (Constants.surfaceAreaOfEarth / (this.rows * this.columns)) * 1000000;	//Convert to square meters
+		double relativeSizeFactor = cell.GetSurfaceArea() / avgGridCellSize;
+		double relativeTempFactor = cell.GetTemp() / avgGridTemp;
+		return -relativeSizeFactor * relativeTempFactor * solarTemp;
 	}
 	
 	private double CalculateHeatWeight(double temp, double length, GridCell cell)
 	{
 		return length / cell.CalculatePerimeter() * temp;
-	}
-	
-	private int CalculatePlanetGridX()
-	{
-		return 180 / Constants.gridLatitudeSize;
-	}
-	
-	private int CalculatePlanetGridY()
-	{
-		return 360 / Constants.gridLongitudeSize;
 	}
 	
 	private int ConvertToArrayIndex(int coordinate, int total)

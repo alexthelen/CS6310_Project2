@@ -266,17 +266,17 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(-80, 0);
+			GridCell cell = new GridCell(-90, 0);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();
 			int[] east = cell.GetEastNeighborCoordinates();
 			int[] west = cell.GetWestNeighborCoordinates();
 			
-			assertArrayEquals(new int[] {-70,0}, north);
-			assertArrayEquals(new int[] {-80,-180}, south);
-			assertArrayEquals(new int[] {-80,10}, east);
-			assertArrayEquals(new int[] {-80,-10}, west);
+			assertArrayEquals(new int[] {-80,0}, north);
+			assertArrayEquals(new int[] {-90,-180}, south);
+			assertArrayEquals(new int[] {-90,10}, east);
+			assertArrayEquals(new int[] {-90,-10}, west);
 		}
 		catch (Exception ex)
 		{
@@ -311,17 +311,17 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(20, -170);
+			GridCell cell = new GridCell(20, -180);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();
 			int[] east = cell.GetEastNeighborCoordinates();
 			int[] west = cell.GetWestNeighborCoordinates();
 			
-			assertArrayEquals(new int[] {30,-170}, north);
-			assertArrayEquals(new int[] {10,-170}, south);
-			assertArrayEquals(new int[] {20,-160}, east);
-			assertArrayEquals(new int[] {20,180}, west);
+			assertArrayEquals(new int[] {30,-180}, north);
+			assertArrayEquals(new int[] {10,-180}, south);
+			assertArrayEquals(new int[] {20,-170}, east);
+			assertArrayEquals(new int[] {20,170}, west);
 		}
 		catch (Exception ex)
 		{
