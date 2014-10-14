@@ -12,6 +12,7 @@ public class GridCell
 	private double southBaseLength;		
 	private double eastWestLength;
 	private double height;
+	private int gridSize;
 	
 	//Accessors---------------------------
 	public int GetLatitude(){ return this.latitude; }
@@ -28,8 +29,10 @@ public class GridCell
 	public double GetWestLength(){ return this.eastWestLength; }
 	
 	//Constructors------------------------
-	public GridCell(int latitudeValue, int longitudeValue) throws Exception
+	public GridCell(int latitudeValue, int longitudeValue, int cellSize) throws Exception
 	{
+		this.gridSize = cellSize;
+		
 		if(latitudeValue <= 90 && latitudeValue >= -90)
 			this.latitude = latitudeValue;
 		else
@@ -44,7 +47,7 @@ public class GridCell
 		this.height = this.CalculateHeight();
 		
 		this.southBaseLength = this.CalculateBase(this.latitude);
-		this.northBaseLength = this.CalculateBase(this.latitude + Constants.gridLatitudeSize);
+		this.northBaseLength = this.CalculateBase(this.latitude + this.gridSize);
 		
 		this.eastWestLength = this.CalculateLegs();
 		this.surfaceArea = this.CalculateSurfaceArea();
@@ -56,7 +59,7 @@ public class GridCell
 		int northLatitude;
 		int northLongitude;
 		
-		if(this.latitude + Constants.gridLatitudeSize == 90)
+		if(this.latitude + this.gridSize == 90)
 		{
 			northLatitude = this.latitude;
 			
@@ -68,7 +71,7 @@ public class GridCell
 		}
 		else
 		{
-			northLatitude = this.latitude + Constants.gridLatitudeSize;
+			northLatitude = this.latitude + this.gridSize;
 			northLongitude = this.longitude;
 		}
 		
@@ -80,7 +83,7 @@ public class GridCell
 		int southLatitude;
 		int southLongitude;
 		
-		if(this.latitude - Constants.gridLatitudeSize < -90)
+		if(this.latitude - this.gridSize < -90)
 		{
 			southLatitude = this.latitude;
 			
@@ -92,7 +95,7 @@ public class GridCell
 		}
 		else
 		{
-			southLatitude = this.latitude - Constants.gridLatitudeSize;
+			southLatitude = this.latitude - this.gridSize;
 			southLongitude = this.longitude;
 		}
 		
@@ -104,10 +107,10 @@ public class GridCell
 		int eastLatitude= this.latitude;
 		int eastLongitude;
 		
-		if(this.longitude + Constants.gridLongitudeSize > 180)
+		if(this.longitude + this.gridSize >= 180)
 			eastLongitude = -180;
 		else
-			eastLongitude = this.longitude + Constants.gridLongitudeSize;
+			eastLongitude = this.longitude + this.gridSize;
 		
 		return new int[] {eastLatitude, eastLongitude};
 	}
@@ -117,10 +120,10 @@ public class GridCell
 		int westLatitude= this.latitude;
 		int westLongitude;
 		
-		if(this.longitude - Constants.gridLongitudeSize < -180)
+		if(this.longitude - this.gridSize < -180)
 			westLongitude = 170;
 		else
-			westLongitude = this.longitude - Constants.gridLongitudeSize;
+			westLongitude = this.longitude - this.gridSize;
 		
 		return new int[] {westLatitude, westLongitude};
 	}
@@ -141,12 +144,12 @@ public class GridCell
 		lat = Math.abs(lat);
 		double radians = lat * Math.PI / 180;
 		double circumference = 2 * Math.PI * Constants.earthRadius * Math.cos(radians);
-		return circumference / (360 / Constants.gridLongitudeSize);
+		return circumference / (360 / this.gridSize);
 	}
 	
 	private double CalculateHeight()
 	{
-		return Constants.distanceBetweenLatitudeLines * Constants.gridLatitudeSize;
+		return Constants.distanceBetweenLatitudeLines * this.gridSize;
 	}
 	
 	private double CalculateLegs()

@@ -14,7 +14,7 @@ public class PlanetTest {
 	{
 		try 
 		{
-			Planet earth = new Planet();
+			Planet earth = new Planet(10);
 			earth.GetGridCell(100, 0);
 			fail("Invalid latitude exception should be thrown.");
 		} 
@@ -29,7 +29,7 @@ public class PlanetTest {
 	{
 		try 
 		{
-			Planet earth = new Planet();
+			Planet earth = new Planet(10);
 			earth.GetGridCell(0, 200);
 			fail("Invalid longitude exception should be thrown.");
 		} 
@@ -44,7 +44,7 @@ public class PlanetTest {
 	{
 		try 
 		{
-			Planet earth = new Planet();
+			Planet earth = new Planet(10);
 			GridCell cell = earth.GetGridCell(0, 0);
 			assertEquals(0, cell.GetLatitude());
 			assertEquals(0, cell.GetLongitude());
@@ -60,7 +60,7 @@ public class PlanetTest {
 	{
 		try 
 		{
-			Planet earth = new Planet();
+			Planet earth = new Planet(10);
 			earth.RotatePlanet();
 			assertEquals(new GregorianCalendar(2000, 1, 1, 1, 0, 0), earth.GetIDLDateTime());
 		} 
@@ -75,7 +75,7 @@ public class PlanetTest {
 	{
 		try 
 		{
-			Planet earth = new Planet();
+			Planet earth = new Planet(10);
 			GridCell cell;
 			earth.ApplyHeatChange();
 			

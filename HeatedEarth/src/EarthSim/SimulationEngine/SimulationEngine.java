@@ -2,31 +2,32 @@ package EarthSim.SimulationEngine;
 
 public class SimulationEngine implements Runnable 
 {
-	@Override
-	public void run() 
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
 	//Attributes--------------------------
 	private Planet earth;
+	private int gridSize;
+	private int runHours;
 
 	//Accessors---------------------------
+	public int GetGridSize() { return this.gridSize; }
+	public void SetGridSize(int value) { this.gridSize = value; }
+	public int GetRunHours() { return this.runHours; }
+	public void SetRunHours(int value) { this.runHours = value; }
 
 	//Constructors------------------------
-	public SimulationEngine()
+	public SimulationEngine(int cellSize, int hours)
 	{
-		
+		this.gridSize = cellSize;
+		this.runHours = hours;
 	}
 	
 	//Public Methods----------------------
-	public void RunSimulation(int hours)
+	@Override
+	public void run() 
 	{
 		try 
 		{
-			this.earth = new Planet();
-			for(int i = 0; i <= hours; i++)
+			this.earth = new Planet(this.gridSize);
+			for(int i = 0; i <= this.runHours; i++)
 			{
 				this.earth.ApplyHeatChange();
 				this.earth.RotatePlanet();
@@ -39,5 +40,4 @@ public class SimulationEngine implements Runnable
 	}
 
 	//Private Methods---------------------
-	
 }
