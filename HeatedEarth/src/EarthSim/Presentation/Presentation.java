@@ -88,6 +88,7 @@ public class Presentation implements Runnable {
 	 */
 	private void idle() {
 		while (_stayIdle) {
+			System.out.println("idle");
 			try {
 				Thread.sleep(IDLE_TIME);
 			} catch (InterruptedException e) {

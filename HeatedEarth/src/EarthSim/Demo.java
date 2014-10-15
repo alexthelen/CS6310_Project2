@@ -14,8 +14,11 @@ import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import EarthSim.GUI.MainWindow;
+import EarthSim.Presentation.Presentation;
 import EarthSim.Presentation.earth.EarthPanel;
 import EarthSim.Presentation.earth.TemperatureGrid;
+import EarthSim.SimulationEngine.SimulationEngine;
 
 /**
  * @author pablo
@@ -27,13 +30,29 @@ public class Demo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		Presentation presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
+		SimulationEngine simulation = new SimulationEngine(12, 12);
+		
+		Thread presentationThread = new Thread(presentation);
+		Thread simulationThread = new Thread(simulation);
+		
+		presentationThread.start();
+		simulationThread.start();
+
+		/* Create and display the form */
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new MainWindow().setVisible(true);
+			}
+		});
+		
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
+//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                createAndShowGUI();
+//            }
+//        });
 	}
 
 
