@@ -31,6 +31,7 @@ public class Demo {
 	 */
 	public static void main(String[] args) {
 		Presentation presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
+		presentation.setRunningInOwnThread(true);
 		SimulationEngine simulation = new SimulationEngine(12, 12);
 		
 		Thread presentationThread = new Thread(presentation);

@@ -13,7 +13,22 @@ import java.util.List;
 public abstract class ProcessingComponent implements Runnable {
 	private List<ProcessingComponentListener> _listeners;
 	protected boolean _stayIdle = false;
+	private boolean runningInOwnThread = false;
 	protected final static int IDLE_TIME = 1000;
+
+	/**
+	 * @return the runningInOwnThread
+	 */
+	public boolean isRunningInOwnThread() {
+		return runningInOwnThread;
+	}
+
+	/**
+	 * @param runningInOwnThread the runningInOwnThread to set
+	 */
+	public void setRunningInOwnThread(boolean runningInOwnThread) {
+		this.runningInOwnThread = runningInOwnThread;
+	}
 
 	/**
 	 * Add a listener to the presentation
@@ -54,7 +69,7 @@ public abstract class ProcessingComponent implements Runnable {
 	 * Stay idle as long as the there is no task at hand
 	 */
 	protected void idle() {
-		while (_stayIdle) {
+		while (_stayIdle && this.isRunningInOwnThread()) {
 			System.out.println("idle");
 			try {
 				Thread.sleep(IDLE_TIME);
