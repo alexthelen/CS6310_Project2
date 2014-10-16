@@ -4,9 +4,8 @@
 package EarthSim.Presentation;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
 
+import EarthSim.ProcessingComponent;
 import EarthSim.Presentation.earth.EarthPanel;
 import EarthSim.Presentation.earth.TemperatureGrid;
 
@@ -18,10 +17,7 @@ import EarthSim.Presentation.earth.TemperatureGrid;
  * @version 1.0
  *
  */
-public class Presentation implements Runnable {
-	private List<PresentationListener> _listeners;
-	private boolean _stayIdle = false;
-	private final static int IDLE_TIME = 1000;
+public class Presentation extends ProcessingComponent {
 	private final EarthPanel _earthPanel;
 	
 	/**
@@ -30,44 +26,13 @@ public class Presentation implements Runnable {
 	public EarthPanel getEarthPanel() {
 		return _earthPanel;
 	}
-
-	/**
-	 * Add a listener to the presentation
-	 * 
-	 * @param listener a {@code PresentationListener} containing the functionality to execute when the Presentation has events to dispatch
-	 */
-	public void addPresentationListener(PresentationListener listener) {
-		_listeners.add(listener);
-	}
-	
-	/**
-	 * Remove all listeners
-	 */
-	public void removeListeners() {
-		_listeners.clear();
-	}
-	
-	/**
-	 * Fire the presentation complete event on all listeners
-	 */
-	private void presentationComplete() {
-		for (PresentationListener listener : _listeners) {
-			listener.onPresentationComplete();
-		}
-	}
 	
 	/**
 	 * <CTOR>
 	 */
 	public Presentation(Dimension minSize, Dimension maxSize, Dimension prefSize) {
-		_listeners = new ArrayList<PresentationListener>();
+		super();
         _earthPanel = new EarthPanel(minSize, maxSize, prefSize);
-	}
-
-	@Override
-	public void run() {
-		_stayIdle = true;
-		idle();
 	}
 	
 	/**
@@ -81,18 +46,5 @@ public class Presentation implements Runnable {
 		presentationComplete();
 		_stayIdle = true;
 		idle();
-	}
-	
-	/**
-	 * Stay idle as long as the there is no task at hand
-	 */
-	private void idle() {
-		while (_stayIdle) {
-			System.out.println("idle");
-			try {
-				Thread.sleep(IDLE_TIME);
-			} catch (InterruptedException e) {
-			}
-		}
 	}
 }
