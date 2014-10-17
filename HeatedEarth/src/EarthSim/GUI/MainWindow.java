@@ -6,30 +6,34 @@
 
 package EarthSim.GUI;
 import java.awt.Dimension;
-
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout;
-import javax.swing.JOptionPane;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import EarthSim.Presentation.Presentation;
-import EarthSim.Presentation.earth.EarthPanel;
-
-import javax.swing.SwingConstants;
 
 /**
  *
  * @author tbaxter
  */
-public class MainWindow extends javax.swing.JFrame {
-
+public class MainWindow extends javax.swing.JFrame {	
+	
+	/**
+	 * Required GUI ID
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	long startTime = 0;
+	long endTime = 0;
+	long startPauseTime = 0;
+	long endPauseTime = 0;
+	long totalPausedTime = 0;
+	
+	private GUIState _state = GUIState.IDLE;
+	
 	/**
 	 * Creates new form MainWindow
 	 */
@@ -105,21 +109,20 @@ public class MainWindow extends javax.swing.JFrame {
 		btnStart.setBounds(458, 549, 75, 29);
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				
 				validateInput();
-
-				//TODO - Start the simulation
+				
+				startSimulation();
 			}
 		});
 
-		btnStart.setLabel("Start");
+		btnStart.setText("Start");
 		getContentPane().add(btnStart);
 		btnPause = new javax.swing.JButton();
 		btnPause.setBounds(538, 549, 80, 29);
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				//TODO - Pause the simulation
+				pauseSimulation();
 			}
 		});
 
@@ -131,8 +134,8 @@ public class MainWindow extends javax.swing.JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				validateInput();
-
-				//TODO - Restart the simulation
+				
+				restartSimulation();
 			}
 		});
 
@@ -141,14 +144,19 @@ public class MainWindow extends javax.swing.JFrame {
 		btnStop = new javax.swing.JButton();
 		btnStop.setBounds(725, 549, 75, 29);
 		btnStop.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				//TODO - Stop the simulation
+			public void actionPerformed(ActionEvent e) {							
+				stopSimulation();
 			}
 		});
 
 		btnStop.setText("Stop");
 		getContentPane().add(btnStop);
+		
+		// Set default button states
+		btnStart.setEnabled(true);
+		btnPause.setEnabled(false);
+		btnRestart.setEnabled(false);
+		btnStop.setEnabled(false);
 
 		pack();
 	}// </editor-fold>                        
@@ -186,6 +194,105 @@ public class MainWindow extends javax.swing.JFrame {
 				new MainWindow().setVisible(true);
 			}
 		});
+	}
+	
+	/**
+	 * Starts the simulation
+	 */
+	private void startSimulation() {
+		
+		if(_state == GUIState.IDLE) {		
+			endTime = 0;					
+			totalPausedTime = 0;
+			startPauseTime = 0;
+			endPauseTime = 0;
+			startTime = System.currentTimeMillis();
+			
+			//TODO - Start the simulation
+			
+		}
+		else if(_state == GUIState.PAUSED) {																				
+			endPauseTime = System.currentTimeMillis();
+			totalPausedTime += (endPauseTime - startPauseTime);			
+			
+			
+			//TODO - Resume the simulation
+			
+		}									
+		
+		btnStart.setEnabled(false);
+		btnPause.setEnabled(true);
+		btnStop.setEnabled(false);
+		btnRestart.setEnabled(true);
+		
+		_state = GUIState.RUNNING;
+	}
+	
+	/**
+	 * Pauses the simulation
+	 */
+	private void pauseSimulation() {
+		
+		startPauseTime = System.currentTimeMillis();
+		endPauseTime = 0;
+		//TODO - Pause the simulation
+		
+		
+		btnStart.setEnabled(true);
+		btnPause.setEnabled(false);
+		btnStop.setEnabled(true);
+		btnRestart.setEnabled(true);
+		
+		_state = GUIState.PAUSED;
+	}
+	
+	/**
+	 * Restarts the simulation
+	 */
+	private void restartSimulation() {
+		
+		endTime = 0;				
+		totalPausedTime = 0;
+		startPauseTime = 0;
+		endPauseTime = 0;
+		
+		startTime = System.currentTimeMillis();
+
+		//TODO - Restart the simulation
+		
+		
+		btnStart.setEnabled(false);
+		btnPause.setEnabled(true);
+		btnStop.setEnabled(true);
+		btnRestart.setEnabled(true);
+		
+		_state = GUIState.RUNNING;
+	}
+	
+	/**
+	 * Stops the simulation
+	 */
+	private void stopSimulation() {
+		
+		//TODO - Stop the simulation
+		
+		
+		endTime = System.currentTimeMillis();
+		
+		System.out.println("Total simulation time in ms is :" + (endTime - startTime));
+		
+		btnStart.setEnabled(true);
+		btnPause.setEnabled(false);
+		btnStop.setEnabled(false);
+		btnRestart.setEnabled(false);
+		
+		_state = GUIState.IDLE;
+		
+		endTime = 0;
+		startTime = 0;
+		totalPausedTime = 0;
+		startPauseTime = 0;
+		endPauseTime = 0;
 	}
 
 	/**
@@ -232,6 +339,7 @@ public class MainWindow extends javax.swing.JFrame {
 	 * Checks if string is a valid integer value
 	 * 
 	 * @param intString a {@code String} containing the input to be validated
+	 * @return true if input can be parsed into a valid integer
 	 */
 	private boolean isValidInt(String intString) {
 
@@ -242,7 +350,16 @@ public class MainWindow extends javax.swing.JFrame {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Gets the current state of the program
+	 * 
+	 * @return current state of the program
+	 */
+	public GUIState getGUIState() {
+		return _state;
+	}
+		
 	// Variables declaration - do not modify                     
 	private javax.swing.JButton btnPause;
 	private javax.swing.JButton btnRestart;
@@ -258,5 +375,11 @@ public class MainWindow extends javax.swing.JFrame {
 	private javax.swing.JTextField tfTimeStep;
 	private JPanel panel;
 	private Presentation presentation;
-	// End of variables declaration                   
+	// End of variables declaration         
+	
+	public enum GUIState {		
+		IDLE,
+		RUNNING,
+		PAUSED				
+	}
 }
