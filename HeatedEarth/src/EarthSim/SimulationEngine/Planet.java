@@ -15,6 +15,7 @@ public class Planet
 	
 	//Accessors---------------------------
 	public Calendar GetIDLDateTime(){ return this.IDLDateTime; }
+	public int GetGridSize(){return this.gridSize; }
 	
 	//Constructors------------------------
 	public Planet(int cellSize) throws Exception
@@ -32,8 +33,12 @@ public class Planet
 	//Public Methods----------------------
 	public void RotatePlanet(int minutes)
 	{
-		this.IDLDateTime.add(Calendar.HOUR, 1);
-		this.noonLongitude += (Constants.degreesPerMinute * minutes);
+		this.IDLDateTime.add(Calendar.MINUTE, minutes);
+		if(this.noonLongitude < 180)
+			this.noonLongitude += (Constants.degreesPerMinute * minutes);
+		else
+			this.noonLongitude = -180;
+		
 	}
 	
 	public void ApplyHeatChange() throws Exception
@@ -81,8 +86,8 @@ public class Planet
 		if(!(longitude <= 180 && latitude >= -180))
 			throw new Exception(Constants.invalidLongitudeMessage);
 		
-		int x = this.ConvertToArrayIndex(latitude, 180);
-		int y = this.ConvertToArrayIndex(longitude, 360);
+		int x = this.ConvertToArrayIndex(latitude, true);
+		int y = this.ConvertToArrayIndex(longitude, false);
 		return this.planetGrid[x][y];
 	}
 	
@@ -105,32 +110,32 @@ public class Planet
 		}
 	}
 	
-	public double DiffuseHeat(GridCell cell)
+	private double DiffuseHeat(GridCell cell)
 	{
 		int[] neighbor = cell.GetNorthNeighborCoordinates();
-		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], 180);
-		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], 360);
+		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], true);
+		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], false);
 		double northWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetNorthBaseLength(), cell);
 		
 		neighbor = cell.GetSouthNeighborCoordinates();
-		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], 180);
-		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], 360);
+		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], true);
+		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], false);
 		double southWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetSouthBaseLength(), cell);
 		
 		neighbor = cell.GetEastNeighborCoordinates();
-		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], 180);
-		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], 360);
+		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], true);
+		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], false);
 		double eastWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetEastLength(), cell);
 		
 		neighbor = cell.GetWestNeighborCoordinates();
-		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], 180);
-		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], 360);
+		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], true);
+		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], false);
 		double westWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetWestLength(), cell);
 		
 		return northWeight + southWeight + eastWeight + westWeight;
 	}
 	
-	public double RadiateSun(GridCell cell)
+	private double RadiateSun(GridCell cell)
 	{
 		double longitudeFactor;
 		int latitudeAbs;
@@ -150,7 +155,7 @@ public class Planet
 		return heatFactor * solarTemp;
 	}
 	
-	public double LoseHeatToSpace(GridCell cell, double avgGridTemp)
+	private double LoseHeatToSpace(GridCell cell, double avgGridTemp)
 	{		
 		double avgGridCellSize = (Constants.surfaceAreaOfEarth / (this.rows * this.columns)) * 1000000;	//Convert to square meters
 		double relativeSizeFactor = cell.GetSurfaceArea() / avgGridCellSize;
@@ -163,8 +168,15 @@ public class Planet
 		return length / cell.CalculatePerimeter() * temp;
 	}
 	
-	private int ConvertToArrayIndex(int coordinate, int total)
+	private int ConvertToArrayIndex(int coordinate, boolean latitude)
 	{
+		int total;
+		
+		if(latitude)
+			total = 180;
+		else
+			total = 360;
+		
 		return (int)Math.floor(coordinate / this.gridSize) + (total / this.gridSize / 2);
 	}
 }

@@ -85,7 +85,7 @@ public class PlanetTest {
 			}
 			
 			earth.ApplyHeatChange();
-		
+			
 			cell = earth.GetGridCell(0, 0);	
 			assertTrue(cell.GetOldTemp() < cell.GetTemp());
 					
