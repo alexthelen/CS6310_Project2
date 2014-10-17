@@ -2,24 +2,24 @@ package EarthSim.GUI;
 
 import java.util.ArrayList;
 
-import EarthSim.SimulationEngine.Planet;
+import EarthSim.Presentation.earth.TemperatureGrid;;
 
 public class DataBuffer {
 
-	private ArrayList<Planet> _buffer;	
+	private ArrayList<TemperatureGrid> _buffer;	
 	private int _capacity = 1;
 	private int _size = 0;
 
 	public DataBuffer() {
 		_size = 0;
 		_capacity = 1;
-		_buffer = new ArrayList<Planet>(1);
+		_buffer = new ArrayList<TemperatureGrid>(1);
 	}
 
 	public DataBuffer(int capacity) {
 		_size = 0;
 		_capacity = capacity;
-		_buffer = new ArrayList<Planet>(capacity);
+		_buffer = new ArrayList<TemperatureGrid>(capacity);
 	}	
 
 	public boolean isEmpty() {
@@ -30,7 +30,7 @@ public class DataBuffer {
 		return _size == _capacity;
 	}
 
-	public synchronized void Put(Planet p) throws BufferFullException {
+	public synchronized void Put(TemperatureGrid p) throws BufferFullException {
 
 		if(isFull()) throw new BufferFullException();
 		
@@ -39,9 +39,9 @@ public class DataBuffer {
 		notify();
 	}		
 	
-	public synchronized Planet Pull() {
+	public synchronized TemperatureGrid Pull() {
 		
-		Planet planet = null;
+		TemperatureGrid planet = null;
 		
 		if(_size > 0) {
 			planet = _buffer.get(0);
