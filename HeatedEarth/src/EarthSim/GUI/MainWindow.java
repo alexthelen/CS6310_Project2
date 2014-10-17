@@ -279,6 +279,12 @@ public class MainWindow extends javax.swing.JFrame {
 		
 		endTime = System.currentTimeMillis();
 		
+		// Get memory usage
+		Runtime runtime = Runtime.getRuntime(); //runtime (runtime?)
+		runtime.gc();
+		long memory = runtime.totalMemory() - runtime.freeMemory();
+		System.out.println("Used memory in bytes is: " + memory);
+		
 		System.out.println("Total simulation time in ms is :" + (endTime - startTime));
 		
 		btnStart.setEnabled(true);
