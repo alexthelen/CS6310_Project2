@@ -11,7 +11,7 @@ public class GridCellTest {
 	{
 		 try
 		 {
-			 GridCell cell = new GridCell(100, 0);
+			 GridCell cell = new GridCell(100, 0, 10);
 			 fail("Exception should be thrown if latitude is greater than 90");
 		 }
 		 catch (Exception ex)
@@ -25,7 +25,7 @@ public class GridCellTest {
 	{
 		 try
 		 {
-			 GridCell cell = new GridCell(-100, 0);
+			 GridCell cell = new GridCell(-100, 0, 10);
 			 fail("Exception should be thrown if latitude is less than -90");
 		 }
 		 catch (Exception ex)
@@ -39,7 +39,7 @@ public class GridCellTest {
 	{
 		 try
 		 {
-			 GridCell cell = new GridCell(0, 190);
+			 GridCell cell = new GridCell(0, 190, 10);
 			 fail("Exception should be thrown if longitude is greater than 180");
 		 }
 		 catch (Exception ex)
@@ -53,7 +53,7 @@ public class GridCellTest {
 	{
 		 try
 		 {
-			 GridCell cell = new GridCell(0, -190);
+			 GridCell cell = new GridCell(0, -190, 10);
 			 fail("Exception should be thrown if longitude is less than -180");
 		 }
 		 catch (Exception ex)
@@ -67,7 +67,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(20, 0);
+			GridCell cell = new GridCell(20, 0, 10);
 			
 			assertEquals(20, cell.GetLatitude());
 			assertEquals(0, cell.GetLongitude());
@@ -91,7 +91,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(-30, 0);
+			GridCell cell = new GridCell(-30, 0, 10);
 			
 			assertEquals(1046.038, cell.GetNorthBaseLength(), 0.01);
 			assertEquals(964.034, cell.GetSouthBaseLength(), 0.01);
@@ -111,7 +111,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(80, 0);
+			GridCell cell = new GridCell(80, 0, 10);
 			
 			assertEquals(0.0, cell.GetNorthBaseLength(), 0.01);
 			assertEquals(193.300, cell.GetSouthBaseLength(), 0.01);
@@ -131,7 +131,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(-90, 0);
+			GridCell cell = new GridCell(-90, 0, 10);
 			
 			assertEquals(193.300, cell.GetNorthBaseLength(), 0.01);
 			assertEquals(0.0, cell.GetSouthBaseLength(), 0.01);
@@ -151,7 +151,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(20, 0);
+			GridCell cell = new GridCell(20, 0, 10);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();
@@ -174,7 +174,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(-20, 0);
+			GridCell cell = new GridCell(-20, 0, 10);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();
@@ -197,7 +197,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(0, 20);
+			GridCell cell = new GridCell(0, 20, 10);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();
@@ -220,7 +220,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(0, -20);
+			GridCell cell = new GridCell(0, -20, 10);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();
@@ -243,7 +243,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(80, 0);
+			GridCell cell = new GridCell(80, 0, 10);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();
@@ -266,7 +266,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(-90, 0);
+			GridCell cell = new GridCell(-90, 0, 10);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();
@@ -288,7 +288,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(20, 170);
+			GridCell cell = new GridCell(20, 170, 10);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();
@@ -311,7 +311,7 @@ public class GridCellTest {
 	{
 		try
 		{
-			GridCell cell = new GridCell(20, -180);
+			GridCell cell = new GridCell(20, -180, 10);
 			
 			int[] north = cell.GetNorthNeighborCoordinates();
 			int[] south = cell.GetSouthNeighborCoordinates();

@@ -30,10 +30,10 @@ public class Planet
 	}
 	
 	//Public Methods----------------------
-	public void RotatePlanet()
+	public void RotatePlanet(int minutes)
 	{
 		this.IDLDateTime.add(Calendar.HOUR, 1);
-		this.noonLongitude += 15;
+		this.noonLongitude += (Constants.degreesPerMinute * minutes);
 	}
 	
 	public void ApplyHeatChange() throws Exception
@@ -63,11 +63,12 @@ public class Planet
 			{
 				operationCell = this.GetGridCell(i, j);
 				
-				solarTemp = this.RadiateSun(operationCell);
-				coolTemp = this.LoseHeatToSpace(operationCell, avgGridTemp);
+				solarTemp = operationCell.GetOldTemp() + (this.RadiateSun(operationCell) / avgGridTemp);
+				coolTemp = operationCell.GetOldTemp() + this.LoseHeatToSpace(operationCell, avgGridTemp);
 				neighborTemp = this.DiffuseHeat(operationCell);			
 				
-				//operationCell.SetTemp(newTemp);	How do we calculate the new temp from the 3 temp calculated values + current temp
+				newTemp = (coolTemp + solarTemp + neighborTemp) / 3;
+				operationCell.SetTemp(newTemp);
 			}
 		}
 	}

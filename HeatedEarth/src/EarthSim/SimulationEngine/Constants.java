@@ -2,7 +2,7 @@ package EarthSim.SimulationEngine;
 
 public class Constants 
 {
-	public final static int rotationPerHour = 15;	//Degrees
+	public final static double degreesPerMinute = 0.25;	//Degrees
 	public final static int tempChangeAtNoonAndMidnight = 5;	//Kelvin
 	public final static double earthRadius = 6378;	//Kilometers
 	public final static double distanceBetweenLatitudeLines = 111;	//Kilometers
