@@ -31,9 +31,11 @@ public class TemperatureColorPicker {
 	 * @return the temperature color
 	 */
 	Color getColor(int temperature) {
-    int b = 0;
+		int b = 0;
 		int g = 0;
 		int r = 0;
+		
+		temperature -= 100;
 
 		if (temperature <= -100) {
 			b = 170;

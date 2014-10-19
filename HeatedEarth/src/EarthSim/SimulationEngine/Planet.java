@@ -7,8 +7,8 @@ public class Planet
 {
 	//Attributes--------------------------
 	private Calendar IDLDateTime;
-	private GridCell[][] planetGrid;
-	private int noonLongitude;
+	public GridCell[][] planetGrid;
+	private double noonLongitude;
 	private int rows;
 	private int columns;
 	private int gridSize;
@@ -37,7 +37,7 @@ public class Planet
 		this.noonLongitude = 0;
 		this.rows = 180 / this.gridSize;
 		this.columns = 360 / this.gridSize;
-		this.planetGrid = new GridCell[this.rows][this.columns];
+		this.planetGrid = new GridCell[this.columns][this.rows];
 		
 		this.InitializeGrid();
 	}
@@ -46,10 +46,10 @@ public class Planet
 	public void RotatePlanet(int minutes)
 	{
 		this.IDLDateTime.add(Calendar.MINUTE, minutes);
-		if(this.noonLongitude < 180)
-			this.noonLongitude += (Constants.degreesPerMinute * minutes);
+		if(this.noonLongitude > -180)
+			this.noonLongitude -= (Constants.degreesPerMinute * minutes);
 		else
-			this.noonLongitude = -180;
+			this.noonLongitude = 180;
 		
 	}
 	
@@ -80,16 +80,21 @@ public class Planet
 			{
 				operationCell = this.GetGridCell(i, j);
 				
-				solarTemp = operationCell.GetOldTemp() + (this.RadiateSun(operationCell) / avgGridTemp);
+				//solarTemp = operationCell.GetOldTemp() + (this.RadiateSun(operationCell) / avgGridTemp);
 				coolTemp = operationCell.GetOldTemp() + this.LoseHeatToSpace(operationCell, avgGridTemp);
 				neighborTemp = this.DiffuseHeat(operationCell);			
 				
-				newTemp = (coolTemp + solarTemp + neighborTemp) / 3;
+				// calculate solar temp
+				solarTemp = this.RadiateSun(operationCell);
+				
+				newTemp = (operationCell.GetOldTemp() + solarTemp + neighborTemp + coolTemp) / 4;
 				operationCell.SetTemp(newTemp);
 				
-				System.out.println(newTemp);
+				System.out.println(i + ", " + j + ": " + newTemp);
 			}
 		}
+		
+		System.out.println("-----------");
 	}
 	
 	public GridCell GetGridCell(int latitude, int longitude) throws Exception
@@ -97,11 +102,11 @@ public class Planet
 		if(!(latitude <= 90 && latitude >= -90))
 			throw new Exception(Constants.invalidLatitudeMessage);
 		
-		if(!(longitude <= 180 && latitude >= -180))
+		if(!(longitude <= 180 && longitude >= -180))
 			throw new Exception(Constants.invalidLongitudeMessage);
 		
-		int x = this.ConvertToArrayIndex(latitude, true);
-		int y = this.ConvertToArrayIndex(longitude, false);
+		int y = this.ConvertToArrayIndex(latitude, true);
+		int x = this.ConvertToArrayIndex(longitude, false);
 		return this.planetGrid[x][y];
 	}
 	
@@ -111,9 +116,9 @@ public class Planet
 		int latitude = -90;
 		int longitude = -180;
 		
-		for(int i = 0; i < this.rows; i++)
+		for(int j = 0; j < this.rows; j++)
 		{
-			for(int j = 0; j < this.columns; j++)
+			for(int i = 0; i < this.columns; i++)
 			{
 				GridCell newCell = new GridCell(latitude, longitude, this.gridSize);
 				this.planetGrid[i][j] = newCell;
@@ -127,23 +132,23 @@ public class Planet
 	private double DiffuseHeat(GridCell cell)
 	{
 		int[] neighbor = cell.GetNorthNeighborCoordinates();
-		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], true);
-		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], false);
+		neighbor[1] = this.ConvertToArrayIndex(neighbor[0], true);
+		neighbor[0] = this.ConvertToArrayIndex(neighbor[1], false);
 		double northWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetNorthBaseLength(), cell);
 		
 		neighbor = cell.GetSouthNeighborCoordinates();
-		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], true);
-		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], false);
+		neighbor[1] = this.ConvertToArrayIndex(neighbor[0], true);
+		neighbor[0] = this.ConvertToArrayIndex(neighbor[1], false);
 		double southWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetSouthBaseLength(), cell);
 		
 		neighbor = cell.GetEastNeighborCoordinates();
-		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], true);
-		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], false);
+		neighbor[1] = this.ConvertToArrayIndex(neighbor[0], true);
+		neighbor[0] = this.ConvertToArrayIndex(neighbor[1], false);
 		double eastWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetEastLength(), cell);
 		
 		neighbor = cell.GetWestNeighborCoordinates();
-		neighbor[0] = this.ConvertToArrayIndex(neighbor[0], true);
-		neighbor[1] = this.ConvertToArrayIndex(neighbor[1], false);
+		neighbor[1] = this.ConvertToArrayIndex(neighbor[0], true);
+		neighbor[0] = this.ConvertToArrayIndex(neighbor[1], false);
 		double westWeight = this.CalculateHeatWeight(this.planetGrid[neighbor[0]][neighbor[1]].GetOldTemp(), cell.GetWestLength(), cell);
 		
 		return northWeight + southWeight + eastWeight + westWeight;
@@ -156,7 +161,7 @@ public class Planet
 		double latitudeFactor;
 		double solarTemp = Math.pow((1 - Constants.aldebo) * Constants.solarEnergy / (4 * Constants.emissivity * Constants.stefanBoltzmannConstant), 1.0/4);
 		double heatFactor = 0;
-		int longitudeDifference = Math.abs(cell.GetLongitude() - this.noonLongitude);
+		double longitudeDifference = Math.abs(cell.GetLongitude() - this.noonLongitude);
 		
 		if(longitudeDifference < 90)
 		{

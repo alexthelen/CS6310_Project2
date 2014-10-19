@@ -69,8 +69,6 @@ public class MainWindow extends javax.swing.JFrame {
 		PresentationThread presentationThread = new PresentationThread();
 		presentationThread.temperatureGrid = itemsToLog;
 		
-		System.out.println("Pablo 01");
-		
 //		presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
 		presentationThread.presentation.getEarthPanel().setBounds(5, 0, 800, 515);
 		getContentPane().add(presentationThread.presentation.getEarthPanel());

@@ -58,7 +58,8 @@ public class SimulationEngine extends ProcessingComponent
 			{
 				this.earth.ApplyHeatChange();
 //				this._buffer.Put(new PlanetGrid(this.earth));
-				this.temperatureGrid.put(new PlanetGrid(this.earth));
+				PlanetGrid planetGrid = new PlanetGrid(this.earth);
+				this.temperatureGrid.put(planetGrid);
 				this.earth.RotatePlanet(this._minutesPerRotation);
 			}
 		} 

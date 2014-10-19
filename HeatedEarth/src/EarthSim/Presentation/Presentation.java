@@ -43,6 +43,7 @@ public class Presentation extends ProcessingComponent {
 	public void updateGrid(TemperatureGrid grid) {
 		_stayIdle = false;		
 		_earthPanel.updateGrid(grid);
+		_earthPanel.moveSunPosition((float)0.25);
 		presentationComplete();
 		_stayIdle = true;
 		idle();

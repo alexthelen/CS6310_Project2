@@ -92,10 +92,8 @@ public class PresentationThread extends Thread {
 	@Override
 	public void run() {
 		TemperatureGrid newGrid;
-		System.out.println("Pablo 02");
 		try {
 			while ((newGrid = temperatureGrid.take()) != null) {
-				System.out.println("Pablo 03");
 				presentation.updateGrid(newGrid);
 			}
 		} catch (InterruptedException e) {

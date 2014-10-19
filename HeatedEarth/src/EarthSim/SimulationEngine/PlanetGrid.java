@@ -20,13 +20,15 @@ public class PlanetGrid implements TemperatureGrid
 		
 		try 
 		{
-			cell = this._planet.GetGridCell(x, y);
+			cell = this._planet.planetGrid[x][y];
 		} 
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
-		
+		if (cell == null) {
+			return 0;
+		}
 		return cell.GetTemp();
 	}
 
