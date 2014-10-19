@@ -19,6 +19,7 @@ import EarthSim.Presentation.Presentation;
 import EarthSim.Presentation.earth.EarthPanel;
 import EarthSim.Presentation.earth.TemperatureGrid;
 import EarthSim.SimulationEngine.SimulationEngine;
+import EarthSim.GUI.DataBuffer;
 
 /**
  * @author pablo
@@ -30,9 +31,10 @@ public class Demo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		DataBuffer buffer = new DataBuffer(Integer.parseInt(args[3]));
 		Presentation presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
 		presentation.setRunningInOwnThread(true);
-		SimulationEngine simulation = new SimulationEngine(12, 12);
+		SimulationEngine simulation = new SimulationEngine(buffer, 12, 12);
 		
 		Thread presentationThread = new Thread(presentation);
 		Thread simulationThread = new Thread(simulation);
