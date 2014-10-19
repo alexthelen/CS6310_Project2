@@ -15,6 +15,7 @@ import EarthSim.Presentation.earth.TemperatureGrid;
 public class PresentationThread extends Thread {
 	public static Presentation presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
 	public BlockingQueue<TemperatureGrid> temperatureGrid;
+	public TemperatureGrid newGrid;
 	
 	/**
 	 * 
@@ -91,13 +92,18 @@ public class PresentationThread extends Thread {
 	
 	@Override
 	public void run() {
-		TemperatureGrid newGrid;
-		try {
-			while ((newGrid = temperatureGrid.take()) != null) {
-				presentation.updateGrid(newGrid);
+		if (temperatureGrid != null) {
+			TemperatureGrid newGrid;
+			try {
+				while ((newGrid = temperatureGrid.take()) != null) {
+					presentation.updateGrid(newGrid);
+					Thread.sleep(1);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		} else if (newGrid != null) {
+			
 		}
 	}
 }

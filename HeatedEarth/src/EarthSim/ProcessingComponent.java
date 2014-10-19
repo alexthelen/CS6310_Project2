@@ -35,7 +35,7 @@ public abstract class ProcessingComponent implements Runnable {
 	 * 
 	 * @param listener a {@code PresentationListener} containing the functionality to execute when the Presentation has events to dispatch
 	 */
-	public void addPresentationListener(ProcessingComponentListener listener) {
+	public void addListener(ProcessingComponentListener listener) {
 		_listeners.add(listener);
 	}
 	
@@ -49,7 +49,7 @@ public abstract class ProcessingComponent implements Runnable {
 	/**
 	 * Fire the presentation complete event on all listeners
 	 */
-	protected void presentationComplete() {
+	protected void processingComplete() {
 		for (ProcessingComponentListener listener : _listeners) {
 			listener.onProcessComplete();
 		}

@@ -44,7 +44,7 @@ public class Presentation extends ProcessingComponent {
 		_stayIdle = false;		
 		_earthPanel.updateGrid(grid);
 		_earthPanel.moveSunPosition((float)0.25);
-		presentationComplete();
+		processingComplete();
 		_stayIdle = true;
 		idle();
 	}

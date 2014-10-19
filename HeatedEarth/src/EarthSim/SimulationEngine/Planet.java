@@ -90,11 +90,11 @@ public class Planet
 				newTemp = (operationCell.GetOldTemp() + solarTemp + neighborTemp + coolTemp) / 4;
 				operationCell.SetTemp(newTemp);
 				
-				System.out.println(i + ", " + j + ": " + newTemp);
+//				System.out.println(i + ", " + j + ": " + newTemp);
 			}
 		}
 		
-		System.out.println("-----------");
+//		System.out.println("-----------");
 	}
 	
 	public GridCell GetGridCell(int latitude, int longitude) throws Exception

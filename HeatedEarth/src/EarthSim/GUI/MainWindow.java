@@ -15,7 +15,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import ArgumentParser.Parser;
 import EarthSim.FinalTemperatureGrid;
+import EarthSim.ProcessingComponentListener;
 import EarthSim.Presentation.Presentation;
 import EarthSim.Presentation.PresentationThread;
 import EarthSim.Presentation.earth.TemperatureGrid;
@@ -32,6 +34,9 @@ public class MainWindow extends javax.swing.JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private Parser parser;
+	private SimulationEngine simulation;
+	
 	long startTime = 0;
 	long endTime = 0;
 	long startPauseTime = 0;
@@ -43,7 +48,14 @@ public class MainWindow extends javax.swing.JFrame {
 	/**
 	 * Creates new form MainWindow
 	 */
-	public MainWindow() {
+	public MainWindow(String[] args) {
+		this.parser = new Parser();
+		try {
+			this.parser.parse(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		initComponents();
 	}
 
@@ -55,42 +67,15 @@ public class MainWindow extends javax.swing.JFrame {
 	@SuppressWarnings("unchecked")
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">                          
 	private void initComponents() {
-
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setMaximumSize(new Dimension(800, 600));
 		setMinimumSize(new Dimension(800, 600));
 		setPreferredSize(new Dimension(800, 600));
 
+		setupProviderAndConsumer();
+		
 		getContentPane().setLayout(null);
 
-		// create simple buffer
-		BlockingQueue<TemperatureGrid> itemsToLog = new ArrayBlockingQueue<TemperatureGrid>(100);
-		
-		PresentationThread presentationThread = new PresentationThread();
-		presentationThread.temperatureGrid = itemsToLog;
-		
-//		presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
-		presentationThread.presentation.getEarthPanel().setBounds(5, 0, 800, 515);
-		getContentPane().add(presentationThread.presentation.getEarthPanel());
-		presentationThread.start();
-		
-		try {
-			itemsToLog.put(new FinalTemperatureGrid());
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		
-		SimulationEngine simulation = new SimulationEngine(null, 15, 1);
-		simulation.temperatureGrid = itemsToLog;
-		Thread simulationThread = new Thread(simulation);
-		simulationThread.start();
-
-
-		//        panel = new JPanel();
-		//        panel.setBounds(0, 0, 800, 515);
-		//        panel.setLayout(null);
-
-		//        getContentPane().add(panel);
 		jLabel1 = new javax.swing.JLabel();
 		jLabel1.setBounds(59, 521, 83, 16);
 		jLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -183,12 +168,105 @@ public class MainWindow extends javax.swing.JFrame {
 		btnStop.setEnabled(false);
 
 		pack();
-	}// </editor-fold>                        
+		
+		try {
+			simulation.RunSimulationOnce();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}// </editor-fold>
+	
+	private void setupProviderAndConsumer() {
+		// create simple buffer
+		final BlockingQueue<TemperatureGrid> buffer = new ArrayBlockingQueue<TemperatureGrid>(parser.getBufferLength());
+		
+		simulation = new SimulationEngine(null, 15, 1);
+		simulation.temperatureGrid = buffer;
+		final Presentation presentation;
+
+		// both elements run in own threads and the initiative is in the simulation
+//		if (this.parser.presentationShouldRunInOwnThread() && this.parser.simulationShouldRunInOwnThread() && (this.parser.getInitiative() == Parser.Initiative.Simulation)) {
+		if (true) {
+			
+			PresentationThread presentationThread = new PresentationThread();
+			presentation = presentationThread.presentation;
+			presentationThread.temperatureGrid = buffer;
+			presentationThread.start();
+			
+			try {
+				buffer.put(new FinalTemperatureGrid());
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			
+			Thread simulationThread = new Thread(simulation);
+			simulationThread.start();
+			
+			presentation.getEarthPanel().setBounds(5, 0, 800, 515);
+			getContentPane().add(presentation.getEarthPanel());
+			/*
+		} else if (this.parser.presentationShouldRunInOwnThread() && this.parser.simulationShouldRunInOwnThread() && (this.parser.getInitiative() == Parser.Initiative.GUI)) {
+//		} else if (true) {
+			PresentationThread presentationThread = new PresentationThread();
+			presentation = presentationThread.presentation;
+
+			try {
+				while ((presentationThread.newGrid = buffer.take()) != null) {
+					presentationThread.start();
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			Thread simulationThread = new Thread(simulation);
+			simulationThread.start();
+			
+			presentation.getEarthPanel().setBounds(5, 0, 800, 515);
+			getContentPane().add(presentation.getEarthPanel());
+		} else if (!this.parser.presentationShouldRunInOwnThread() && !this.parser.simulationShouldRunInOwnThread() && (this.parser.getInitiative() == Parser.Initiative.GUI)) {
+			presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
+			
+			simulation.addListener(new ProcessingComponentListener() {
+
+				@Override
+				public void onProcessComplete() {
+					TemperatureGrid newGrid;
+					try {
+						newGrid = buffer.take();
+						presentation.updateGrid(newGrid);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			});
+			
+//			presentation.addListener(new ProcessingComponentListener() {
+//
+//				@Override
+//				public void onProcessComplete() {					
+//					try {
+//						simulation.RunSimulationOnce();
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//				
+//			});
+			
+			presentation.getEarthPanel().setBounds(5, 0, 800, 515);
+			getContentPane().add(presentation.getEarthPanel());
+			*/
+		}
+	}
 
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String args[]) {
+	public static void main(final String args[]) {
 		/* Set the Nimbus look and feel */
 		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 		/* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -215,7 +293,7 @@ public class MainWindow extends javax.swing.JFrame {
 		/* Create and display the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new MainWindow().setVisible(true);
+				new MainWindow(args).setVisible(true);
 			}
 		});
 	}

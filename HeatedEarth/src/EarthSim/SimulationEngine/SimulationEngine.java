@@ -56,11 +56,7 @@ public class SimulationEngine extends ProcessingComponent
 		{
 			while(produce)
 			{
-				this.earth.ApplyHeatChange();
-//				this._buffer.Put(new PlanetGrid(this.earth));
-				PlanetGrid planetGrid = new PlanetGrid(this.earth);
-				this.temperatureGrid.put(planetGrid);
-				this.earth.RotatePlanet(this._minutesPerRotation);
+				this.RunSimulationOnce();
 			}
 		} 
 		catch (Exception e) 
@@ -69,6 +65,15 @@ public class SimulationEngine extends ProcessingComponent
 		}
 	}
 	
+	public void RunSimulationOnce() throws Exception
+	{
+		this.earth.ApplyHeatChange();
+//		this._buffer.Put(new PlanetGrid(this.earth));
+		PlanetGrid planetGrid = new PlanetGrid(this.earth);
+		this.temperatureGrid.put(planetGrid);
+		this.processingComplete();
+		this.earth.RotatePlanet(this._minutesPerRotation);
+	}
 	//Private Methods---------------------
 
 }
