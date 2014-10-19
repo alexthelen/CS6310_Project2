@@ -1,5 +1,8 @@
 package EarthSim.SimulationEngine;
+import java.util.concurrent.BlockingQueue;
+
 import EarthSim.GUI.DataBuffer;
+import EarthSim.Presentation.earth.TemperatureGrid;
 import EarthSim.ProcessingComponent;
 
 public class SimulationEngine extends ProcessingComponent
@@ -10,6 +13,8 @@ public class SimulationEngine extends ProcessingComponent
 	private int _minutesPerRotation;
 	private DataBuffer _buffer;
 	private boolean produce;
+
+	public BlockingQueue<TemperatureGrid> temperatureGrid;
 
 	//Accessors---------------------------
 	public int GetGridSize() { return this._gridSize; }
@@ -36,6 +41,14 @@ public class SimulationEngine extends ProcessingComponent
 		}
 	}
 	
+	@Override
+	public void run() {
+		super.run();
+		
+		produce = true;
+		RunSimulation();
+	}
+	
 	//Public Methods----------------------
 	public void RunSimulation()
 	{
@@ -44,7 +57,8 @@ public class SimulationEngine extends ProcessingComponent
 			while(produce)
 			{
 				this.earth.ApplyHeatChange();
-				this._buffer.Put(new PlanetGrid(this.earth));
+//				this._buffer.Put(new PlanetGrid(this.earth));
+				this.temperatureGrid.put(new PlanetGrid(this.earth));
 				this.earth.RotatePlanet(this._minutesPerRotation);
 			}
 		} 

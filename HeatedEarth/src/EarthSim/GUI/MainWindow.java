@@ -82,7 +82,7 @@ public class MainWindow extends javax.swing.JFrame {
 			e1.printStackTrace();
 		}
 		
-		SimulationEngine simulation = new SimulationEngine(null, 15, 12, 1);
+		SimulationEngine simulation = new SimulationEngine(null, 15, 1);
 		simulation.temperatureGrid = itemsToLog;
 		Thread simulationThread = new Thread(simulation);
 		simulationThread.start();
