@@ -33,13 +33,13 @@ public class PlanetGrid implements TemperatureGrid
 	@Override
 	public int getLatitudeLength() 
 	{
-		return this._planet.GetGridSize();
+		return this._planet.getRows();
 	}
 
 	@Override
 	public int getLongitudeLength() 
 	{
-		return this._planet.GetGridSize();
+		return this._planet.getColumns();
 	}
 
 }

@@ -17,6 +17,18 @@ public class Planet
 	public Calendar GetIDLDateTime(){ return this.IDLDateTime; }
 	public int GetGridSize(){return this.gridSize; }
 	
+	/**
+	 * @return the rows
+	 */
+	public int getRows() {
+		return rows;
+	}
+	/**
+	 * @return the columns
+	 */
+	public int getColumns() {
+		return columns;
+	}
 	//Constructors------------------------
 	public Planet(int cellSize) throws Exception
 	{
@@ -74,6 +86,8 @@ public class Planet
 				
 				newTemp = (coolTemp + solarTemp + neighborTemp) / 3;
 				operationCell.SetTemp(newTemp);
+				
+				System.out.println(newTemp);
 			}
 		}
 	}

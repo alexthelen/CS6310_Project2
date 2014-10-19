@@ -8,12 +8,18 @@ package EarthSim.GUI;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import EarthSim.FinalTemperatureGrid;
 import EarthSim.Presentation.Presentation;
+import EarthSim.Presentation.PresentationThread;
+import EarthSim.Presentation.earth.TemperatureGrid;
+import EarthSim.SimulationEngine.SimulationEngine;
 
 /**
  *
@@ -57,9 +63,29 @@ public class MainWindow extends javax.swing.JFrame {
 
 		getContentPane().setLayout(null);
 
-		presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
-		presentation.getEarthPanel().setBounds(5, 0, 800, 515);
-		getContentPane().add(presentation.getEarthPanel());
+		// create simple buffer
+		BlockingQueue<TemperatureGrid> itemsToLog = new ArrayBlockingQueue<TemperatureGrid>(100);
+		
+		PresentationThread presentationThread = new PresentationThread();
+		presentationThread.temperatureGrid = itemsToLog;
+		
+		System.out.println("Pablo 01");
+		
+//		presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
+		presentationThread.presentation.getEarthPanel().setBounds(5, 0, 800, 515);
+		getContentPane().add(presentationThread.presentation.getEarthPanel());
+		presentationThread.start();
+		
+		try {
+			itemsToLog.put(new FinalTemperatureGrid());
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		
+		SimulationEngine simulation = new SimulationEngine(null, 15, 12, 1);
+		simulation.temperatureGrid = itemsToLog;
+		Thread simulationThread = new Thread(simulation);
+		simulationThread.start();
 
 
 		//        panel = new JPanel();
