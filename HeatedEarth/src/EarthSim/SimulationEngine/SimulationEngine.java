@@ -14,7 +14,7 @@ public class SimulationEngine extends ProcessingComponent
 	private DataBuffer _buffer;
 	private boolean produce;
 
-	public BlockingQueue<TemperatureGrid> temperatureGrid;
+	public BlockingQueue<TemperatureGrid> temperatureGrid;	
 
 	//Accessors---------------------------
 	public int GetGridSize() { return this._gridSize; }
@@ -25,12 +25,14 @@ public class SimulationEngine extends ProcessingComponent
 	public void SetProduce(boolean value){ this.produce = value; }
 
 	//Constructors------------------------
-	public SimulationEngine(DataBuffer buffer, int cellSize, int minutesPerRotation)
+	public SimulationEngine(DataBuffer buffer, int cellSize, int minutesPerRotation, boolean dedicatedThread)
 	{
 		this._gridSize = cellSize;
 		this._minutesPerRotation = minutesPerRotation;
 		this.produce = false;
-		
+		threadName = "SimulationThread";
+		setRunningInOwnThread(dedicatedThread);
+
 		try 
 		{
 			this.earth = new Planet(this._gridSize);
@@ -40,15 +42,26 @@ public class SimulationEngine extends ProcessingComponent
 			e.printStackTrace();
 		}
 	}
+
+	public void startThread() {
+		System.out.println("Starting " +  threadName );
+		if (thread == null)
+		{
+			thread = new Thread(this, threadName);
+			thread.start();
+		}
+	}
 	
-	@Override
-	public void run() {
-		super.run();
-		
+	public void startNoThread() {
+		run();
+	}
+	
+	public void run() {		
+
 		produce = true;
 		RunSimulation();
 	}
-	
+
 	//Public Methods----------------------
 	public void RunSimulation()
 	{
@@ -64,11 +77,11 @@ public class SimulationEngine extends ProcessingComponent
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void RunSimulationOnce() throws Exception
 	{
 		this.earth.ApplyHeatChange();
-//		this._buffer.Put(new PlanetGrid(this.earth));
+		//		this._buffer.Put(new PlanetGrid(this.earth));
 		PlanetGrid planetGrid = new PlanetGrid(this.earth);
 		this.temperatureGrid.put(planetGrid);
 		this.processingComplete();

@@ -28,23 +28,23 @@ import EarthSim.SimulationEngine.SimulationEngine;
  * @author tbaxter
  */
 public class MainWindow extends javax.swing.JFrame {	
-	
+
 	/**
 	 * Required GUI ID
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private Parser parser;
-	private SimulationEngine simulation;
-	
+	private SimulationEngine simulation;	
+
 	long startTime = 0;
 	long endTime = 0;
 	long startPauseTime = 0;
 	long endPauseTime = 0;
 	long totalPausedTime = 0;
-	
+
 	private GUIState _state = GUIState.IDLE;
-	
+
 	/**
 	 * Creates new form MainWindow
 	 */
@@ -55,7 +55,7 @@ public class MainWindow extends javax.swing.JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		initComponents();
 	}
 
@@ -72,8 +72,9 @@ public class MainWindow extends javax.swing.JFrame {
 		setMinimumSize(new Dimension(800, 600));
 		setPreferredSize(new Dimension(800, 600));
 
-		setupProviderAndConsumer();
-		
+		setupAllInOneThread();
+		//setupProviderAndConsumer();
+
 		getContentPane().setLayout(null);
 
 		jLabel1 = new javax.swing.JLabel();
@@ -118,9 +119,9 @@ public class MainWindow extends javax.swing.JFrame {
 		btnStart.setBounds(458, 549, 75, 29);
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				validateInput();
-				
+
 				startSimulation();
 			}
 		});
@@ -143,7 +144,7 @@ public class MainWindow extends javax.swing.JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				validateInput();
-				
+
 				restartSimulation();
 			}
 		});
@@ -160,7 +161,7 @@ public class MainWindow extends javax.swing.JFrame {
 
 		btnStop.setText("Stop");
 		getContentPane().add(btnStop);
-		
+
 		// Set default button states
 		btnStart.setEnabled(true);
 		btnPause.setEnabled(false);
@@ -168,41 +169,66 @@ public class MainWindow extends javax.swing.JFrame {
 		btnStop.setEnabled(false);
 
 		pack();
+
+//		try {
+//			simulation.RunSimulationOnce();
+//		} catch (Exception e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+	}// </editor-fold>
+
+	private void setupAllInOneThread() {
+		final BlockingQueue<TemperatureGrid> buffer = new ArrayBlockingQueue<TemperatureGrid>(parser.getBufferLength());
+
+		simulation = new SimulationEngine(null, 5, 1, true);
+		simulation.temperatureGrid = buffer;
+		final Presentation presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600), true);
+		
+		presentation.getEarthPanel().setBounds(5, 0, 800, 515);
+		getContentPane().add(presentation.getEarthPanel());
+		
+		//presentation.run();
+		presentation.startThread();
 		
 		try {
-			simulation.RunSimulationOnce();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
+			buffer.put(new FinalTemperatureGrid());
+		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-	}// </editor-fold>
-	
+		
+		simulation.startThread();
+		
+		//simulation.run();			
+		
+	}
+
 	private void setupProviderAndConsumer() {
 		// create simple buffer
 		final BlockingQueue<TemperatureGrid> buffer = new ArrayBlockingQueue<TemperatureGrid>(parser.getBufferLength());
-		
-		simulation = new SimulationEngine(null, 15, 1);
+
+		simulation = new SimulationEngine(null, 5, 1, true);
 		simulation.temperatureGrid = buffer;
 		final Presentation presentation;
 
 		// both elements run in own threads and the initiative is in the simulation
-//		if (this.parser.presentationShouldRunInOwnThread() && this.parser.simulationShouldRunInOwnThread() && (this.parser.getInitiative() == Parser.Initiative.Simulation)) {
+		//		if (this.parser.presentationShouldRunInOwnThread() && this.parser.simulationShouldRunInOwnThread() && (this.parser.getInitiative() == Parser.Initiative.Simulation)) {
 		if (true) {
-			
+
 			PresentationThread presentationThread = new PresentationThread();
 			presentation = presentationThread.presentation;
-			presentationThread.temperatureGrid = buffer;
+			//presentationThread.temperatureGrid = buffer;
 			presentationThread.start();
-			
+
 			try {
 				buffer.put(new FinalTemperatureGrid());
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			
+
 			Thread simulationThread = new Thread(simulation);
 			simulationThread.start();
-			
+
 			presentation.getEarthPanel().setBounds(5, 0, 800, 515);
 			getContentPane().add(presentation.getEarthPanel());
 			/*
@@ -218,15 +244,15 @@ public class MainWindow extends javax.swing.JFrame {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
+
 			Thread simulationThread = new Thread(simulation);
 			simulationThread.start();
-			
+
 			presentation.getEarthPanel().setBounds(5, 0, 800, 515);
 			getContentPane().add(presentation.getEarthPanel());
 		} else if (!this.parser.presentationShouldRunInOwnThread() && !this.parser.simulationShouldRunInOwnThread() && (this.parser.getInitiative() == Parser.Initiative.GUI)) {
 			presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
-			
+
 			simulation.addListener(new ProcessingComponentListener() {
 
 				@Override
@@ -240,9 +266,9 @@ public class MainWindow extends javax.swing.JFrame {
 						e.printStackTrace();
 					}
 				}
-				
+
 			});
-			
+
 //			presentation.addListener(new ProcessingComponentListener() {
 //
 //				@Override
@@ -256,10 +282,10 @@ public class MainWindow extends javax.swing.JFrame {
 //				}
 //				
 //			});
-			
+
 			presentation.getEarthPanel().setBounds(5, 0, 800, 515);
 			getContentPane().add(presentation.getEarthPanel());
-			*/
+			 */
 		}
 	}
 
@@ -297,105 +323,105 @@ public class MainWindow extends javax.swing.JFrame {
 			}
 		});
 	}
-	
+
 	/**
 	 * Starts the simulation
 	 */
 	private void startSimulation() {
-		
+
 		if(_state == GUIState.IDLE) {		
 			endTime = 0;					
 			totalPausedTime = 0;
 			startPauseTime = 0;
 			endPauseTime = 0;
 			startTime = System.currentTimeMillis();
-			
+
 			//TODO - Start the simulation
-			
+
 		}
 		else if(_state == GUIState.PAUSED) {																				
 			endPauseTime = System.currentTimeMillis();
 			totalPausedTime += (endPauseTime - startPauseTime);			
-			
-			
+
+
 			//TODO - Resume the simulation
-			
+
 		}									
-		
+
 		btnStart.setEnabled(false);
 		btnPause.setEnabled(true);
 		btnStop.setEnabled(false);
 		btnRestart.setEnabled(true);
-		
+
 		_state = GUIState.RUNNING;
 	}
-	
+
 	/**
 	 * Pauses the simulation
 	 */
 	private void pauseSimulation() {
-		
+
 		startPauseTime = System.currentTimeMillis();
 		endPauseTime = 0;
 		//TODO - Pause the simulation
-		
-		
+
+
 		btnStart.setEnabled(true);
 		btnPause.setEnabled(false);
 		btnStop.setEnabled(true);
 		btnRestart.setEnabled(true);
-		
+
 		_state = GUIState.PAUSED;
 	}
-	
+
 	/**
 	 * Restarts the simulation
 	 */
 	private void restartSimulation() {
-		
+
 		endTime = 0;				
 		totalPausedTime = 0;
 		startPauseTime = 0;
 		endPauseTime = 0;
-		
+
 		startTime = System.currentTimeMillis();
 
 		//TODO - Restart the simulation
-		
-		
+
+
 		btnStart.setEnabled(false);
 		btnPause.setEnabled(true);
 		btnStop.setEnabled(true);
 		btnRestart.setEnabled(true);
-		
+
 		_state = GUIState.RUNNING;
 	}
-	
+
 	/**
 	 * Stops the simulation
 	 */
 	private void stopSimulation() {
-		
+
 		//TODO - Stop the simulation
-		
-		
+
+
 		endTime = System.currentTimeMillis();
-		
+
 		// Get memory usage
 		Runtime runtime = Runtime.getRuntime(); //runtime (runtime?)
 		runtime.gc();
 		long memory = runtime.totalMemory() - runtime.freeMemory();
 		System.out.println("Used memory in bytes is: " + memory);
-		
+
 		System.out.println("Total simulation time in ms is :" + (endTime - startTime));
-		
+
 		btnStart.setEnabled(true);
 		btnPause.setEnabled(false);
 		btnStop.setEnabled(false);
 		btnRestart.setEnabled(false);
-		
+
 		_state = GUIState.IDLE;
-		
+
 		endTime = 0;
 		startTime = 0;
 		totalPausedTime = 0;
@@ -458,7 +484,7 @@ public class MainWindow extends javax.swing.JFrame {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Gets the current state of the program
 	 * 
@@ -467,7 +493,7 @@ public class MainWindow extends javax.swing.JFrame {
 	public GUIState getGUIState() {
 		return _state;
 	}
-		
+
 	// Variables declaration - do not modify                     
 	private javax.swing.JButton btnPause;
 	private javax.swing.JButton btnRestart;
@@ -484,7 +510,7 @@ public class MainWindow extends javax.swing.JFrame {
 	private JPanel panel;
 	private Presentation presentation;
 	// End of variables declaration         
-	
+
 	public enum GUIState {		
 		IDLE,
 		RUNNING,

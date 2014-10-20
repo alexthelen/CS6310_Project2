@@ -15,6 +15,8 @@ public abstract class ProcessingComponent implements Runnable {
 	protected boolean _stayIdle = false;
 	private boolean runningInOwnThread = false;
 	protected final static int IDLE_TIME = 1000;
+	protected Thread thread;
+	protected String threadName;
 
 	/**
 	 * @return the runningInOwnThread
@@ -70,7 +72,7 @@ public abstract class ProcessingComponent implements Runnable {
 	 */
 	protected void idle() {
 		while (_stayIdle && this.isRunningInOwnThread()) {
-			System.out.println("idle");
+			System.out.println(threadName + ": idle");
 			try {
 				Thread.sleep(IDLE_TIME);
 			} catch (InterruptedException e) {
