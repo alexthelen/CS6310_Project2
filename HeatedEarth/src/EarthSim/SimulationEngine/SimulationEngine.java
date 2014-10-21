@@ -1,36 +1,36 @@
 package EarthSim.SimulationEngine;
-import java.util.concurrent.BlockingQueue;
-
+import EarthSim.FinalTemperatureGrid;
+import EarthSim.ProcessingComponent;
+import EarthSim.ProcessingComponentListener;
 import EarthSim.GUI.DataBuffer;
 import EarthSim.Presentation.earth.TemperatureGrid;
-import EarthSim.ProcessingComponent;
 
-public class SimulationEngine extends ProcessingComponent
+public class SimulationEngine extends ProcessingComponent implements ProcessingComponentListener
 {
 	//Attributes--------------------------
 	private Planet earth;
 	private int _gridSize;
 	private int _minutesPerRotation;
 	private DataBuffer<TemperatureGrid> _buffer;
-	private boolean produce;
+	private boolean _isRunning;
+	private boolean _isPaused = false;
 
 	//public BlockingQueue<TemperatureGrid> temperatureGrid;	
-	public DataBuffer<TemperatureGrid> temperatureGrid;
+	//public DataBuffer<TemperatureGrid> temperatureGrid;
 
 	//Accessors---------------------------
 	public int GetGridSize() { return this._gridSize; }
 	public void SetGridSize(int value) { this._gridSize = value; }
 	public int GetMinutesPerRotation() { return this._minutesPerRotation; }
-	public void SetMinutesPerRotation(int value) { this._minutesPerRotation = value; }
-	public boolean GetProduce(){ return this.produce; }
-	public void SetProduce(boolean value){ this.produce = value; }
+	public void SetMinutesPerRotation(int value) { this._minutesPerRotation = value; }	
 
 	//Constructors------------------------
-	public SimulationEngine(DataBuffer buffer, int cellSize, int minutesPerRotation, boolean dedicatedThread)
+	public SimulationEngine(DataBuffer<TemperatureGrid> buffer, int cellSize, int minutesPerRotation, boolean dedicatedThread)
 	{
+		this._buffer = buffer;
 		this._gridSize = cellSize;
 		this._minutesPerRotation = minutesPerRotation;
-		this.produce = false;
+		this._isRunning = false;
 		threadName = "SimulationThread";
 		setRunningInOwnThread(dedicatedThread);
 
@@ -40,11 +40,36 @@ public class SimulationEngine extends ProcessingComponent
 		} 
 		catch (Exception e) 
 		{
-			e.printStackTrace();
+			System.out.println("Simulation Error: " + e.getMessage());
 		}
+	}	
+	
+	public void Start() {
+		_isPaused = false;		
+	}
+	
+	public void Pause() {
+		_isPaused = true;
+	}
+	
+	public void Resume() {
+		_isPaused = false;
+	}
+	
+	public void Stop() {
+		_isPaused = true;					
+		_buffer.Clear();
+		_buffer.Put(new FinalTemperatureGrid());
 	}
 
-	public void startThread() {
+	public void process() {
+
+		_isPaused = true;
+		if (this.isRunningInOwnThread()) startThread();		
+		else startNoThread();
+	}
+
+	private void startThread() {
 		System.out.println("Starting " +  threadName );
 		if (thread == null)
 		{
@@ -52,15 +77,21 @@ public class SimulationEngine extends ProcessingComponent
 			thread.start();
 		}
 	}
-	
-	public void startNoThread() {
+
+	private void startNoThread() {
 		run();
 	}
-	
+
+	@Override
 	public void run() {		
 
-		produce = true;
-		RunSimulation();
+		_isRunning = true;
+		if(hasInitiative()) {				
+			RunSimulation();
+		}
+		else {
+			idle();
+		}
 	}
 
 	//Public Methods----------------------
@@ -68,30 +99,48 @@ public class SimulationEngine extends ProcessingComponent
 	{
 		try 
 		{
-			while(produce)
-			{
-				this.RunSimulationOnce();
+			while(_isRunning)
+			{				
+				Thread.sleep(1);
+				Simulate();
 			}
 		} 
 		catch (Exception e) 
 		{
-			e.printStackTrace();
+			System.out.println("Simulation Error: " + e.getMessage());
 		}
-	}
+	}	
 
-	public void RunSimulationOnce() throws Exception
-	{
-		this.earth.ApplyHeatChange();
-		//		this._buffer.Put(new PlanetGrid(this.earth));
-		PlanetGrid planetGrid = new PlanetGrid(this.earth);
-		
-		while(this.temperatureGrid.Put(planetGrid)) {
-			//System.out.println("Simulation: Waiting for buffer");
+	public void Simulate() throws Exception
+	{		
+		if(!_isPaused) {	
+			System.out.println("Simulation: Unpaused");
+			this.earth.ApplyHeatChange();		
+			PlanetGrid planetGrid = new PlanetGrid(this.earth);		
+			if(this._buffer.isFull()) {
+				System.out.println("Simulation: Buffer full");
+			}
+			else {
+				this._buffer.Put(planetGrid);
+				System.out.println("Simulation: Pushing to buffer");
+			}							
+			this.earth.RotatePlanet(this._minutesPerRotation);
+			if(hasInitiative()) {
+				System.out.println("Simulation: Initiative");
+				this.processingComplete();
+			}
 		}
-		
-		this.processingComplete();
-		this.earth.RotatePlanet(this._minutesPerRotation);
 	}
 	//Private Methods---------------------
+	@Override
+	public void onProcessComplete() {
+		System.out.println("Simulation: No Initiative");
+		try {
+			this.Simulate();
+		} catch (Exception e) {
+			System.out.println("Simulation Error: " + e.getMessage());
+		}
+
+	}
 
 }

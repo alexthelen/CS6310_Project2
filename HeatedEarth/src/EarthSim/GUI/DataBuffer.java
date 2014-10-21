@@ -2,8 +2,6 @@ package EarthSim.GUI;
 
 import java.util.ArrayList;
 
-import EarthSim.Presentation.earth.TemperatureGrid;;
-
 public class DataBuffer<T> {
 
 	private ArrayList<T> _buffer;	
@@ -13,7 +11,7 @@ public class DataBuffer<T> {
 	public DataBuffer() {
 		_size = 0;
 		_capacity = 1;
-		_buffer = new ArrayList<T>(1);
+		_buffer = new ArrayList<T>(1);		
 	}
 
 	public DataBuffer(int capacity) {
@@ -28,6 +26,12 @@ public class DataBuffer<T> {
 
 	public boolean isFull() {
 		return _size == _capacity;
+	}
+	
+	public synchronized void Clear() {		
+		_buffer.clear();		
+		_buffer = null;
+		_buffer = new ArrayList<T>(_capacity);		
 	}
 
 	public synchronized boolean Put(T p) {

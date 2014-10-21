@@ -6,7 +6,9 @@ package EarthSim.Presentation;
 import java.awt.Dimension;
 import java.util.concurrent.BlockingQueue;
 
+import EarthSim.FinalTemperatureGrid;
 import EarthSim.ProcessingComponent;
+import EarthSim.ProcessingComponentListener;
 import EarthSim.GUI.DataBuffer;
 import EarthSim.Presentation.earth.EarthPanel;
 import EarthSim.Presentation.earth.TemperatureGrid;
@@ -19,11 +21,11 @@ import EarthSim.Presentation.earth.TemperatureGrid;
  * @version 1.0
  *
  */
-public class Presentation extends ProcessingComponent {
-	private final EarthPanel _earthPanel;
-	//public BlockingQueue<TemperatureGrid> temperatureGrid;
-	public TemperatureGrid newGrid;
-	public DataBuffer<TemperatureGrid> temperatureGrid;
+public class Presentation extends ProcessingComponent implements ProcessingComponentListener {
+	private final EarthPanel _earthPanel;		
+	private DataBuffer<TemperatureGrid> _buffer;
+	private boolean _isRunning = false;
+	private boolean _isPaused = false;
 
 	/**
 	 * @return the {@link EarthPanel} being displayed
@@ -35,14 +37,41 @@ public class Presentation extends ProcessingComponent {
 	/**
 	 * <CTOR>
 	 */
-	public Presentation(Dimension minSize, Dimension maxSize, Dimension prefSize, boolean dedicatedThread) {
+	public Presentation(DataBuffer<TemperatureGrid> buffer, Dimension minSize, Dimension maxSize, Dimension prefSize, boolean dedicatedThread) {
 		super();
+		_buffer = buffer;
 		_earthPanel = new EarthPanel(minSize, maxSize, prefSize);
 		threadName = "PresentationThread";
 		setRunningInOwnThread(dedicatedThread);
+		_isRunning = false;
 	}
 
-	public void startThread() {
+	public void Start() {
+		_isPaused = false;
+	}
+	
+	public void Pause() {
+		_isPaused = true;
+	}
+	
+	public void Resume() {
+		_isPaused = false;
+	}
+	
+	public void Stop() {
+		_isPaused = true;
+		_buffer.Clear();
+		_buffer.Put(new FinalTemperatureGrid());
+	}
+
+	public void process() {
+
+		_isPaused = true;
+		if (this.isRunningInOwnThread()) startThread();		
+		else startNoThread();
+	}
+
+	private void startThread() {
 		System.out.println("Starting " +  threadName );
 		if (thread == null)
 		{
@@ -51,23 +80,44 @@ public class Presentation extends ProcessingComponent {
 		}
 	}
 
-	public void startNoThread() {
+	private void startNoThread() {
 		run();
 	}
 
+	@Override
 	public void run() {		
-		while(true) {
-			if (temperatureGrid != null) {
-				TemperatureGrid newGrid;
+		_isRunning = true;
+		if(hasInitiative()) {			
+			RunPresentation();
+		}
+		else {
+			idle();
+		}
+	}
+
+	public void RunPresentation() {
+		while(_isRunning) {
+			Present();
+		}		
+	}	
+
+	private void Present() {
+		if(!_isPaused) {
+			TemperatureGrid newGrid = null;
+
+			if(_buffer != null) {
 				try {
-					while ((newGrid = temperatureGrid.Pull()) != null) {
-						System.out.println("Presentation: Pulling data from buffer");
-						this.updateGrid(newGrid);
-						Thread.sleep(1);
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					newGrid = _buffer.Pull();
+					System.out.println("Presentation: Pulling data from buffer");
+					this.updateGrid(newGrid);
+				} catch (Exception ex) {
+					System.out.println("Presentation Error: " + ex.getMessage());
 				}
+			}
+
+			if(hasInitiative()) {
+				System.out.println("Presentation: Initiative");
+				this.processingComplete();
 			}
 		}
 	}
@@ -78,11 +128,16 @@ public class Presentation extends ProcessingComponent {
 	 * @param grid 	the {@link TemperatureGrid} to be displayed in the map
 	 */
 	public void updateGrid(TemperatureGrid grid) {
-		_stayIdle = false;		
+		//_stayIdle = false;		
 		_earthPanel.updateGrid(grid);
-		_earthPanel.moveSunPosition((float)0.25);
-		processingComplete();
-		_stayIdle = true;
+		_earthPanel.moveSunPosition((float)0.25);		
+		//_stayIdle = true;
 		//idle();
+	}
+
+	@Override
+	public void onProcessComplete() {
+		System.out.println("Presentation: No Initiative");
+		Present();
 	}
 }

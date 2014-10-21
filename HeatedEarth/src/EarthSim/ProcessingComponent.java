@@ -17,7 +17,23 @@ public abstract class ProcessingComponent implements Runnable {
 	protected final static int IDLE_TIME = 1000;
 	protected Thread thread;
 	protected String threadName;
+	protected boolean _hasInitiative = false;
 
+	/**
+	 * @return the hasInitiative
+	 */
+	public boolean hasInitiative() {
+		return _hasInitiative;
+	}
+	
+	/**
+	 * Sets the initiative property
+	 * @param init determines if the initiative is set
+	 */
+	public void setInitiative(boolean init) {
+		_hasInitiative = init;
+	}
+	
 	/**
 	 * @return the runningInOwnThread
 	 */
@@ -61,16 +77,17 @@ public abstract class ProcessingComponent implements Runnable {
 		_listeners = new ArrayList<ProcessingComponentListener>();
 	}
 
-	@Override
-	public void run() {
-		_stayIdle = true;
-		idle();
-	}
+//	@Override
+//	public void run() {
+//		_stayIdle = true;
+//		idle();
+//	}
 	
 	/**
 	 * Stay idle as long as the there is no task at hand
 	 */
 	protected void idle() {
+		_stayIdle = true;
 		while (_stayIdle && this.isRunningInOwnThread()) {
 			System.out.println(threadName + ": idle");
 			try {

@@ -30,22 +30,12 @@ public class Demo {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		DataBuffer buffer = new DataBuffer(Integer.parseInt(args[3]));
-		Presentation presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600));
-		presentation.setRunningInOwnThread(true);
-		SimulationEngine simulation = new SimulationEngine(buffer, 12, 12);
-		
-		Thread presentationThread = new Thread(presentation);
-		Thread simulationThread = new Thread(simulation);
-		
-		presentationThread.start();
-		simulationThread.start();
+	public static void main(final String[] args) {	
 
 		/* Create and display the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new MainWindow().setVisible(true);
+				new MainWindow(args).setVisible(true);
 			}
 		});
 		
