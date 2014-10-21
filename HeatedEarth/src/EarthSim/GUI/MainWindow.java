@@ -179,8 +179,10 @@ public class MainWindow extends javax.swing.JFrame {
 	}// </editor-fold>
 
 	private void setupAllInOneThread() {
-		final BlockingQueue<TemperatureGrid> buffer = new ArrayBlockingQueue<TemperatureGrid>(parser.getBufferLength());
+		//final BlockingQueue<TemperatureGrid> buffer = new ArrayBlockingQueue<TemperatureGrid>(parser.getBufferLength());
 
+		final DataBuffer<TemperatureGrid> buffer = new DataBuffer<TemperatureGrid>(200);
+		
 		simulation = new SimulationEngine(null, 5, 1, true);
 		simulation.temperatureGrid = buffer;
 		final Presentation presentation = new Presentation(new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600), true);
@@ -189,12 +191,14 @@ public class MainWindow extends javax.swing.JFrame {
 		getContentPane().add(presentation.getEarthPanel());
 		
 		//presentation.run();
+		presentation.temperatureGrid = buffer;
 		presentation.startThread();
 		
 		try {
-			buffer.put(new FinalTemperatureGrid());
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
+			buffer.Put(new FinalTemperatureGrid());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		simulation.startThread();
@@ -208,7 +212,7 @@ public class MainWindow extends javax.swing.JFrame {
 		final BlockingQueue<TemperatureGrid> buffer = new ArrayBlockingQueue<TemperatureGrid>(parser.getBufferLength());
 
 		simulation = new SimulationEngine(null, 5, 1, true);
-		simulation.temperatureGrid = buffer;
+		//simulation.temperatureGrid = buffer;
 		final Presentation presentation;
 
 		// both elements run in own threads and the initiative is in the simulation

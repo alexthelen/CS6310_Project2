@@ -11,10 +11,11 @@ public class SimulationEngine extends ProcessingComponent
 	private Planet earth;
 	private int _gridSize;
 	private int _minutesPerRotation;
-	private DataBuffer _buffer;
+	private DataBuffer<TemperatureGrid> _buffer;
 	private boolean produce;
 
-	public BlockingQueue<TemperatureGrid> temperatureGrid;	
+	//public BlockingQueue<TemperatureGrid> temperatureGrid;	
+	public DataBuffer<TemperatureGrid> temperatureGrid;
 
 	//Accessors---------------------------
 	public int GetGridSize() { return this._gridSize; }
@@ -83,7 +84,11 @@ public class SimulationEngine extends ProcessingComponent
 		this.earth.ApplyHeatChange();
 		//		this._buffer.Put(new PlanetGrid(this.earth));
 		PlanetGrid planetGrid = new PlanetGrid(this.earth);
-		this.temperatureGrid.put(planetGrid);
+		
+		while(this.temperatureGrid.Put(planetGrid)) {
+			//System.out.println("Simulation: Waiting for buffer");
+		}
+		
 		this.processingComplete();
 		this.earth.RotatePlanet(this._minutesPerRotation);
 	}
