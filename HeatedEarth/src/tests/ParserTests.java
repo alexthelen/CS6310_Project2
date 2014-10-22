@@ -3,13 +3,15 @@
  */
 package tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import ArgumentParser.Parser.Initiative;
+import EarthSim.ComponentType;
 
 /**
  * @author pablo
@@ -27,7 +29,7 @@ public class ParserTests {
 		
 		assertFalse(parser.presentationShouldRunInOwnThread());
 		assertFalse(parser.simulationShouldRunInOwnThread());
-		assertEquals(parser.getInitiative(), Initiative.GUI);
+		assertEquals(parser.getInitiative(), ComponentType.GUI);
 		assertEquals(parser.getBufferLength(), 1);
 	}
 
@@ -126,7 +128,7 @@ public class ParserTests {
 		ArgumentParser.Parser parser = new ArgumentParser.Parser();
 		parser.parse(args);
 
-		assertEquals(parser.getInitiative(), Initiative.Simulation);
+		assertEquals(parser.getInitiative(), ComponentType.Simulation);
 	}
 
 	@Test
@@ -135,7 +137,7 @@ public class ParserTests {
 		ArgumentParser.Parser parser = new ArgumentParser.Parser();
 		parser.parse(args);
 
-		assertEquals(parser.getInitiative(), Initiative.Presentation);
+		assertEquals(parser.getInitiative(), ComponentType.Presentation);
 	}
 
 	@Test
