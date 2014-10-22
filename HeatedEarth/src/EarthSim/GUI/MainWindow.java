@@ -8,17 +8,16 @@ package EarthSim.GUI;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import ArgumentParser.Parser;
+import EarthSim.ComponentType;
 import EarthSim.FinalTemperatureGrid;
+import EarthSim.ProcessingComponentListener;
 import EarthSim.Presentation.Presentation;
-import EarthSim.Presentation.PresentationThread;
 import EarthSim.Presentation.earth.TemperatureGrid;
 import EarthSim.SimulationEngine.SimulationEngine;
 
@@ -26,7 +25,7 @@ import EarthSim.SimulationEngine.SimulationEngine;
  *
  * @author tbaxter
  */
-public class MainWindow extends javax.swing.JFrame {	
+public class MainWindow extends javax.swing.JFrame implements ProcessingComponentListener {	
 
 	/**
 	 * Required GUI ID
@@ -80,45 +79,45 @@ public class MainWindow extends javax.swing.JFrame {
 		getContentPane().setLayout(null);
 
 		jLabel1 = new javax.swing.JLabel();
-		jLabel1.setBounds(59, 521, 83, 16);
+		jLabel1.setBounds(59, 511, 83, 16);
 		jLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		jLabel1.setText("Grid Spacing:");
 		getContentPane().add(jLabel1);
 		tfGridSpacing = new javax.swing.JTextField();
 		tfGridSpacing.setText("15");
-		tfGridSpacing.setBounds(147, 515, 55, 28);
+		tfGridSpacing.setBounds(147, 505, 55, 28);
 		getContentPane().add(tfGridSpacing);
 		jLabel4 = new javax.swing.JLabel();
-		jLabel4.setBounds(207, 521, 49, 16);
+		jLabel4.setBounds(207, 511, 60, 16);
 
 		jLabel4.setText("degrees");
 		getContentPane().add(jLabel4);
 		jLabel3 = new javax.swing.JLabel();
-		jLabel3.setBounds(494, 521, 164, 16);
+		jLabel3.setBounds(480, 511, 185, 16);
 
 		jLabel3.setText("Presentation Display Rate:");
 		getContentPane().add(jLabel3);
 		tfDisplayRate = new javax.swing.JTextField();
-		tfDisplayRate.setBounds(695, 515, 105, 28);
+		tfDisplayRate.setBounds(695, 505, 100, 28);
 		getContentPane().add(tfDisplayRate);
 		jLabel2 = new javax.swing.JLabel();
-		jLabel2.setBounds(0, 555, 137, 16);
+		jLabel2.setBounds(5, 545, 137, 16);
 		jLabel2.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		jLabel2.setText("Simulation Time Step:");
 		getContentPane().add(jLabel2);
 		tfTimeStep = new javax.swing.JTextField();
 		tfTimeStep.setText("1");
-		tfTimeStep.setBounds(147, 548, 55, 28);
+		tfTimeStep.setBounds(147, 538, 55, 28);
 		getContentPane().add(tfTimeStep);
 		jLabel5 = new javax.swing.JLabel();
-		jLabel5.setBounds(207, 555, 51, 16);
+		jLabel5.setBounds(207, 545, 51, 16);
 
 		jLabel5.setText("minutes");
 		getContentPane().add(jLabel5);
 		btnStart = new javax.swing.JButton();
-		btnStart.setBounds(458, 549, 75, 29);
+		btnStart.setBounds(458, 539, 75, 29);
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -131,7 +130,7 @@ public class MainWindow extends javax.swing.JFrame {
 		btnStart.setText("Start");
 		getContentPane().add(btnStart);
 		btnPause = new javax.swing.JButton();
-		btnPause.setBounds(538, 549, 80, 29);
+		btnPause.setBounds(538, 539, 80, 29);
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pauseSimulation();
@@ -141,7 +140,7 @@ public class MainWindow extends javax.swing.JFrame {
 		btnPause.setText("Pause");
 		getContentPane().add(btnPause);
 		btnResume = new javax.swing.JButton();
-		btnResume.setBounds(623, 549, 88, 29);
+		btnResume.setBounds(623, 539, 88, 29);
 		btnResume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -154,7 +153,7 @@ public class MainWindow extends javax.swing.JFrame {
 		btnResume.setText("Resume");
 		getContentPane().add(btnResume);
 		btnStop = new javax.swing.JButton();
-		btnStop.setBounds(725, 549, 75, 29);
+		btnStop.setBounds(720, 539, 75, 29);
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {							
 				stopSimulation();
@@ -180,7 +179,7 @@ public class MainWindow extends javax.swing.JFrame {
 
 		try {
 			parser.setBufferLenght("20");
-			parser.setInitiative(Parser.Initiative.Simulation);
+			parser.setInitiative(ComponentType.Simulation);
 			parser.setPresentationShouldRunInOwnThread(true);
 			parser.setSimulationShouldRunInOwnThread(true);
 		} catch (Exception e) {			
@@ -188,7 +187,7 @@ public class MainWindow extends javax.swing.JFrame {
 		}
 
 		// END TEMPORARY
-
+		
 		final DataBuffer<TemperatureGrid> buffer = new DataBuffer<TemperatureGrid>(parser.getBufferLength());
 
 		simulation = new SimulationEngine(buffer, 5, 1, parser.simulationShouldRunInOwnThread());							
@@ -197,33 +196,34 @@ public class MainWindow extends javax.swing.JFrame {
 		presentation.getEarthPanel().setBounds(5, 0, 800, 515);
 		getContentPane().add(presentation.getEarthPanel());
 
-		if(parser.getInitiative() == Parser.Initiative.Presentation) {
+		if(parser.getInitiative() == ComponentType.Presentation) {
 			presentation.setInitiative(true);
 			simulation.setInitiative(false);
 			this.setInitiative(false);
+			presentation.addListener(simulation);			
 		}
-		else if(parser.getInitiative() == Parser.Initiative.Simulation) {
+		else if(parser.getInitiative() == ComponentType.Simulation) {
 			presentation.setInitiative(false);
 			simulation.setInitiative(true);
-			this.setInitiative(false);
+			this.setInitiative(false);			
+			simulation.addListener(presentation);
 		}
-		else if(parser.getInitiative() == Parser.Initiative.GUI) {
+		else if(parser.getInitiative() == ComponentType.GUI) {
 			presentation.setInitiative(false);
 			simulation.setInitiative(false);
 			this.setInitiative(true);
-		}				
-
+			simulation.addListener(this);
+			presentation.addListener(this);
+		}		
+						
 		try {
 			buffer.Put(new FinalTemperatureGrid());
 		} catch (Exception e) {			
 			System.out.println("Error: " + e.getMessage());
-		}
-
-		presentation.addListener(simulation);
-		simulation.addListener(presentation);						
+		}			
 
 		presentation.process();				
-		simulation.process();	
+		simulation.process();				
 	}
 
 
@@ -285,6 +285,15 @@ public class MainWindow extends javax.swing.JFrame {
 		// Start the simulation		
 		simulation.Start();
 		presentation.Start();
+		
+		// Start the first iteration if the GUI has the initiative
+		if(parser.getInitiative() == ComponentType.GUI) {
+			try {				
+				simulation.Simulate();
+			} catch (Exception e) {
+				System.out.println("Simulation Error: " + e.getMessage());
+			}
+		}
 
 		btnStart.setEnabled(false);
 		btnPause.setEnabled(true);
@@ -432,12 +441,29 @@ public class MainWindow extends javax.swing.JFrame {
 	private javax.swing.JTextField tfDisplayRate;
 	private javax.swing.JTextField tfGridSpacing;
 	private javax.swing.JTextField tfTimeStep;
-	private JPanel panel;
 	// End of variables declaration         
 
 	public enum GUIState {		
 		IDLE,
 		RUNNING,
 		PAUSED				
+	}
+
+	@Override
+	public void onProcessComplete(ComponentType origin) {
+		
+		if(origin == ComponentType.Presentation) {
+			System.out.println("Simulation: No Initiative");
+			try {
+				simulation.Simulate();
+			} catch (Exception e) {
+				System.out.println("Simulation Error: " + e.getMessage());
+			}
+		}
+		else if(origin == ComponentType.Simulation) {
+			System.out.println("Presentation: No Initiative");
+			presentation.Present();
+		}		
+		
 	}
 }

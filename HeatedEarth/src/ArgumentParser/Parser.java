@@ -3,6 +3,8 @@
  */
 package ArgumentParser;
 
+import EarthSim.ComponentType;
+
 /**
  * Parser will take an array of strings containing the values of the 
  * flags utilized in a command line environment.
@@ -11,16 +13,11 @@ package ArgumentParser;
  * @version 1
  *
  */
-public class Parser {
-	public enum Initiative {
-		GUI,
-		Simulation,
-		Presentation
-	}
+public class Parser {	
 	
 	private boolean _simulationShouldRunInOwnThread = false;
 	private boolean _presentationShouldRunInOwnThread = false;
-	private Initiative initiative = Initiative.GUI;
+	private ComponentType _initiative = ComponentType.GUI;
 	private int bufferLength = 1;
 
 	/**
@@ -56,15 +53,15 @@ public class Parser {
 	/**
 	 * @return the initiative
 	 */
-	public Initiative getInitiative() {
-		return initiative;
+	public ComponentType getInitiative() {
+		return _initiative;
 	}
 
 	/**
-	 * @param initiative the initiative to set
+	 * @param ComponentType the initiative to set
 	 */
-	public void setInitiative(Initiative initiative) {
-		this.initiative = initiative;
+	public void setInitiative(ComponentType initiative) {
+		this._initiative = initiative;
 	}
 
 	/**
@@ -111,7 +108,7 @@ public class Parser {
 		// reset all the properties to default values
 		this._simulationShouldRunInOwnThread = false;
 		this._presentationShouldRunInOwnThread = false;
-		this.initiative = Initiative.GUI;
+		this._initiative = ComponentType.GUI;
 		this.bufferLength = 1;
 
 		while (i < args.length) {
@@ -129,10 +126,10 @@ public class Parser {
 							this.setSimulationShouldRunInOwnThread(true);
 						} else if (parameterType.equals("p")) {
 							this.setPresentationShouldRunInOwnThread(true);
-						} else if (parameterType.equals("r") && (this.getInitiative() == Initiative.GUI)) {
-							this.setInitiative(Initiative.Presentation);
-						} else if (parameterType.equals("t") && (this.getInitiative() == Initiative.GUI)) {
-							this.setInitiative(Initiative.Simulation);
+						} else if (parameterType.equals("r") && (this.getInitiative() == ComponentType.GUI)) {
+							this.setInitiative(ComponentType.Presentation);
+						} else if (parameterType.equals("t") && (this.getInitiative() == ComponentType.GUI)) {
+							this.setInitiative(ComponentType.Simulation);
 						} else {
 							throw new Exception(Parser.EXCEPTION_CONFLICT);
 						}

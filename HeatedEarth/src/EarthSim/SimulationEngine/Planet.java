@@ -40,7 +40,7 @@ public class Planet
 		this.planetGrid = new GridCell[this.columns][this.rows];
 		
 		this.InitializeGrid();
-	}
+	}	
 	
 	//Public Methods----------------------
 	public void RotatePlanet(int minutes)
@@ -51,6 +51,16 @@ public class Planet
 		else
 			this.noonLongitude = 180;
 		
+	}
+	
+	public void ResetGrid() {
+		this.planetGrid = null;
+		this.planetGrid = new GridCell[this.columns][this.rows];
+		try {
+			this.InitializeGrid();
+		} catch (Exception e) {
+			
+		}		
 	}
 	
 	public void ApplyHeatChange() throws Exception

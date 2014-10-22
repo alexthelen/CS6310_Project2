@@ -4,8 +4,8 @@
 package EarthSim.Presentation;
 
 import java.awt.Dimension;
-import java.util.concurrent.BlockingQueue;
 
+import EarthSim.ComponentType;
 import EarthSim.FinalTemperatureGrid;
 import EarthSim.ProcessingComponent;
 import EarthSim.ProcessingComponentListener;
@@ -39,6 +39,7 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	 */
 	public Presentation(DataBuffer<TemperatureGrid> buffer, Dimension minSize, Dimension maxSize, Dimension prefSize, boolean dedicatedThread) {
 		super();
+		_componentType = ComponentType.Presentation;
 		_buffer = buffer;
 		_earthPanel = new EarthPanel(minSize, maxSize, prefSize);
 		threadName = "PresentationThread";
@@ -49,19 +50,18 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	public void Start() {
 		_isPaused = false;
 	}
-	
+
 	public void Pause() {
 		_isPaused = true;
 	}
-	
+
 	public void Resume() {
 		_isPaused = false;
 	}
-	
+
 	public void Stop() {
 		_isPaused = true;
-		_buffer.Clear();
-		_buffer.Put(new FinalTemperatureGrid());
+		this.updateGrid(new FinalTemperatureGrid());		
 	}
 
 	public void process() {
@@ -101,7 +101,7 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 		}		
 	}	
 
-	private void Present() {
+	public void Present() {
 		if(!_isPaused) {
 			TemperatureGrid newGrid = null;
 
@@ -115,10 +115,8 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 				}
 			}
 
-			if(hasInitiative()) {
-				System.out.println("Presentation: Initiative");
-				this.processingComplete();
-			}
+			System.out.println("Presentation: Processing Complete");
+			this.processingComplete();			
 		}
 	}
 
@@ -127,16 +125,13 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	 * 
 	 * @param grid 	the {@link TemperatureGrid} to be displayed in the map
 	 */
-	public void updateGrid(TemperatureGrid grid) {
-		//_stayIdle = false;		
+	public void updateGrid(TemperatureGrid grid) {		
 		_earthPanel.updateGrid(grid);
-		_earthPanel.moveSunPosition((float)0.25);		
-		//_stayIdle = true;
-		//idle();
+		_earthPanel.moveSunPosition((float)0.25);				
 	}
 
 	@Override
-	public void onProcessComplete() {
+	public void onProcessComplete(ComponentType origin) {
 		System.out.println("Presentation: No Initiative");
 		Present();
 	}

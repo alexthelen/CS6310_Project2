@@ -8,7 +8,7 @@ public class Constants
 	public final static double distanceBetweenLatitudeLines = 111;	//Kilometers
 	public final static double surfaceAreaOfEarth = 510072000;	//Kilometers
 	public final static double solarEnergy = 1366;	//Watts per square meter
-	public final static double emissivity = 1;	//Earth's average fraction of eneryg reradiated
+	public final static double emissivity = 1;	//Earth's average fraction of energy reradiated
 	public final static double aldebo = 0;	//Earth's average fraction of energy reflected
 	public final static double stefanBoltzmannConstant = 0.0000000567;
 	public final static double tempSun = 278;	//Kelvin

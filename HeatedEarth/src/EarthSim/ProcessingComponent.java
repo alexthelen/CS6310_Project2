@@ -18,6 +18,7 @@ public abstract class ProcessingComponent implements Runnable {
 	protected Thread thread;
 	protected String threadName;
 	protected boolean _hasInitiative = false;
+	protected ComponentType _componentType;	
 
 	/**
 	 * @return the hasInitiative
@@ -69,7 +70,7 @@ public abstract class ProcessingComponent implements Runnable {
 	 */
 	protected void processingComplete() {
 		for (ProcessingComponentListener listener : _listeners) {
-			listener.onProcessComplete();
+			listener.onProcessComplete(_componentType);
 		}
 	}
 	
