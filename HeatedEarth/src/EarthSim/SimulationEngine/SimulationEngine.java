@@ -132,12 +132,11 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 	{		
 		if(!_isPaused) {				
 			this.earth.ApplyHeatChange();		
-			PlanetGrid planetGrid = new PlanetGrid(this.earth);		
 			if(this._buffer.isFull()) {
 				System.out.println("Simulation: Buffer full");
 			}
 			else {
-				this._buffer.Put(planetGrid);
+				this._buffer.Put(this.earth);
 				System.out.println("Simulation: Pushing to buffer");
 			}							
 			this.earth.RotatePlanet(this._minutesPerRotation);			

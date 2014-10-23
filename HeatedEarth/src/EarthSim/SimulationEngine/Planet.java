@@ -3,7 +3,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.lang.Math;
 
-public class Planet 
+import EarthSim.Presentation.earth.TemperatureGrid;
+
+public class Planet implements TemperatureGrid
 {
 	//Attributes--------------------------
 	private Calendar IDLDateTime;
@@ -43,6 +45,37 @@ public class Planet
 	}	
 	
 	//Public Methods----------------------
+	@Override
+	public double getTemperature(int x, int y) 
+	{	
+		GridCell cell = null;
+		
+		try 
+		{
+			cell = this.planetGrid[x][y];
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		if (cell == null) {
+			return 0;
+		}
+		return cell.GetTemp();
+	}
+
+	@Override
+	public int getLatitudeLength() 
+	{
+		return this.getRows();
+	}
+
+	@Override
+	public int getLongitudeLength() 
+	{
+		return this.getColumns();
+	}
+	
 	public void RotatePlanet(int minutes)
 	{
 		this.IDLDateTime.add(Calendar.MINUTE, minutes);
