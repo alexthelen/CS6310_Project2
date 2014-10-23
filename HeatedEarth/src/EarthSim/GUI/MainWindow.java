@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import ArgumentParser.Parser;
@@ -190,7 +189,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		
 		final DataBuffer<TemperatureGrid> buffer = new DataBuffer<TemperatureGrid>(parser.getBufferLength());
 
-		simulation = new SimulationEngine(buffer, 5, 1, parser.simulationShouldRunInOwnThread());							
+		simulation = new SimulationEngine(buffer, parser.simulationShouldRunInOwnThread());							
 		presentation = new Presentation(buffer, new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600), parser.presentationShouldRunInOwnThread());
 
 		presentation.getEarthPanel().setBounds(5, 0, 800, 515);
@@ -281,6 +280,10 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 	 * Starts the simulation
 	 */
 	private void startSimulation() {
+		
+		// Set simulation parameters
+		simulation.SetGridSize(Integer.parseInt(tfGridSpacing.getText()));
+		simulation.SetMinutesPerRotation(Integer.parseInt(tfTimeStep.getText()));
 
 		// Start the simulation		
 		simulation.Start();
