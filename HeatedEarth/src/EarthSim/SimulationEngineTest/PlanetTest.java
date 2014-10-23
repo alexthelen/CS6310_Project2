@@ -17,7 +17,10 @@ public class PlanetTest {
 	{
 		try 
 		{
-			SimulationEngine se = new SimulationEngine(new DataBuffer<TemperatureGrid>(), 179, 60, false);
+			SimulationEngine se = new SimulationEngine(new DataBuffer<TemperatureGrid>(), false);
+			se.SetGridSize(179);
+			se.SetMinutesPerRotation(60);
+			
 			assertEquals(90, se.GetGridSize());
 		} 
 		
