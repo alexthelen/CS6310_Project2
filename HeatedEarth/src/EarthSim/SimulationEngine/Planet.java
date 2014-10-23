@@ -19,18 +19,6 @@ public class Planet implements TemperatureGrid
 	public Calendar GetIDLDateTime(){ return this.IDLDateTime; }
 	public int GetGridSize(){return this.gridSize; }
 	
-	/**
-	 * @return the rows
-	 */
-	public int getRows() {
-		return rows;
-	}
-	/**
-	 * @return the columns
-	 */
-	public int getColumns() {
-		return columns;
-	}
 	//Constructors------------------------
 	public Planet(int cellSize) throws Exception
 	{
@@ -67,13 +55,13 @@ public class Planet implements TemperatureGrid
 	@Override
 	public int getLatitudeLength() 
 	{
-		return this.getRows();
+		return this.rows;
 	}
 
 	@Override
 	public int getLongitudeLength() 
 	{
-		return this.getColumns();
+		return this.columns;
 	}
 	
 	public void RotatePlanet(int minutes)
