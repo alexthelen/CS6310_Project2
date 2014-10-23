@@ -118,6 +118,7 @@ public class Planet implements TemperatureGrid
 				// calculate solar temp
 				solarTemp = this.RadiateSun(operationCell);
 				
+				//newTemp = (operationCell.GetOldTemp() + solarTemp + coolTemp) / 3;
 				newTemp = (operationCell.GetOldTemp() + solarTemp + neighborTemp + coolTemp) / 4;
 				operationCell.SetTemp(newTemp);
 				
@@ -227,11 +228,6 @@ public class Planet implements TemperatureGrid
 		else
 			total = 360;
 		
-		int index = (int)Math.floor(coordinate / this.gridSize) + (total / this.gridSize / 2);
-		if (index == 36) {
-			index = 35;
-		}
-		
-		return index;
+		return (int)Math.floor(coordinate / this.gridSize) + (total / this.gridSize / 2);		
 	}
 }
