@@ -35,6 +35,9 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 		if(gridSize > 180)
 			gridSize = 180;
 		
+		if(gridSize < 0)
+			gridSize = 1;
+		
 		while(180 % gridSize != 0)
 		{
 			gridSize--;
