@@ -6,6 +6,9 @@ package EarthSim;
 import java.util.ArrayList;
 import java.util.List;
 
+import EarthSim.GUI.DataBuffer;
+import EarthSim.Presentation.earth.TemperatureGrid;
+
 /**
  * @author pablo
  *
@@ -19,7 +22,46 @@ public abstract class ProcessingComponent implements Runnable {
 	protected String threadName;
 	protected boolean _hasInitiative = false;
 	protected ComponentType _componentType;	
+	protected DataBuffer<TemperatureGrid> _buffer;
+	protected boolean _isRunning;
+	protected boolean _isPaused = false;
 
+	public void Start() {
+		_isPaused = false;
+	}
+
+	public void Pause() {
+		_isPaused = true;
+	}
+
+	public void Resume() {
+		_isPaused = false;
+	}
+
+	public void Stop() {
+		_isPaused = true;		
+	}
+
+	public void process() {
+
+		_isPaused = true;
+		if (this.isRunningInOwnThread()) startThread();		
+		else startNoThread();
+	}
+
+	private void startThread() {
+		System.out.println("Starting " +  threadName );
+		if (thread == null)
+		{
+			thread = new Thread(this, threadName);
+			thread.start();
+		}
+	}
+
+	private void startNoThread() {
+		run();
+	}
+	
 	/**
 	 * @return the hasInitiative
 	 */

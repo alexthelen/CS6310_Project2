@@ -12,26 +12,10 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 	private Planet earth;
 	private int _gridSize;
 	private int _minutesPerRotation;
-	private DataBuffer<TemperatureGrid> _buffer;
-	private boolean _isRunning;
-	private boolean _isPaused = false;
 
 	//Accessors---------------------------
 	public int GetGridSize() { return this._gridSize; }
-	public void SetGridSize(int value) { this._gridSize = value; }
-	public int GetMinutesPerRotation() { return this._minutesPerRotation; }
-	public void SetMinutesPerRotation(int value) { this._minutesPerRotation = value; }	
-
-	//Constructors------------------------
-	public SimulationEngine(DataBuffer<TemperatureGrid> buffer, int gridSize, int minutesPerRotation, boolean dedicatedThread)
-	{
-		_componentType = ComponentType.Simulation;
-		this._buffer = buffer;
-		this._minutesPerRotation = minutesPerRotation;
-		this._isRunning = false;
-		threadName = "SimulationThread";
-		setRunningInOwnThread(dedicatedThread);
-		
+	public void SetGridSize(int gridSize) {
 		if(gridSize > 180)
 			gridSize = 180;
 		
@@ -43,6 +27,20 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 			gridSize--;
 		}
 		this._gridSize = gridSize;
+		}
+	public int GetMinutesPerRotation() { return this._minutesPerRotation; }
+	public void SetMinutesPerRotation(int value) { this._minutesPerRotation = value; }	
+
+	//Constructors------------------------
+	public SimulationEngine(DataBuffer<TemperatureGrid> buffer, boolean dedicatedThread)
+	{
+		_componentType = ComponentType.Simulation;
+		this._buffer = buffer;
+		this._minutesPerRotation = 1;
+		this._isRunning = false;
+		threadName = "SimulationThread";
+		setRunningInOwnThread(dedicatedThread);
+		this.SetGridSize(15);
 		
 		try 
 		{
@@ -54,18 +52,7 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 		}
 	}	
 
-	public void Start() {
-		_isPaused = false;				
-	}
-
-	public void Pause() {
-		_isPaused = true;
-	}
-
-	public void Resume() {
-		_isPaused = false;
-	}
-
+	@Override
 	public void Stop() {
 		_isPaused = true;		
 		this.earth = null;
@@ -77,26 +64,6 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 		} catch (Exception e) {
 			System.out.println("Simulation Error: Resetting planet");
 		}
-	}
-
-	public void process() {
-
-		_isPaused = true;
-		if (this.isRunningInOwnThread()) startThread();		
-		else startNoThread();
-	}
-
-	private void startThread() {
-		System.out.println("Starting " +  threadName );
-		if (thread == null)
-		{
-			thread = new Thread(this, threadName);
-			thread.start();
-		}
-	}
-
-	private void startNoThread() {
-		run();
 	}
 
 	@Override
