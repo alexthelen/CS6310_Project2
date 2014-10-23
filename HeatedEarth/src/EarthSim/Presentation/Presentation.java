@@ -23,9 +23,6 @@ import EarthSim.Presentation.earth.TemperatureGrid;
  */
 public class Presentation extends ProcessingComponent implements ProcessingComponentListener {
 	private final EarthPanel _earthPanel;		
-	private DataBuffer<TemperatureGrid> _buffer;
-	private boolean _isRunning = false;
-	private boolean _isPaused = false;
 
 	/**
 	 * @return the {@link EarthPanel} being displayed
@@ -47,41 +44,10 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 		_isRunning = false;
 	}
 
-	public void Start() {
-		_isPaused = false;
-	}
-
-	public void Pause() {
-		_isPaused = true;
-	}
-
-	public void Resume() {
-		_isPaused = false;
-	}
-
+	@Override
 	public void Stop() {
 		_isPaused = true;
 		this.updateGrid(new FinalTemperatureGrid());		
-	}
-
-	public void process() {
-
-		_isPaused = true;
-		if (this.isRunningInOwnThread()) startThread();		
-		else startNoThread();
-	}
-
-	private void startThread() {
-		System.out.println("Starting " +  threadName );
-		if (thread == null)
-		{
-			thread = new Thread(this, threadName);
-			thread.start();
-		}
-	}
-
-	private void startNoThread() {
-		run();
 	}
 
 	@Override

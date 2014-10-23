@@ -54,18 +54,7 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 		}
 	}	
 
-	public void Start() {
-		_isPaused = false;				
-	}
-
-	public void Pause() {
-		_isPaused = true;
-	}
-
-	public void Resume() {
-		_isPaused = false;
-	}
-
+	@Override
 	public void Stop() {
 		_isPaused = true;		
 		this.earth = null;
@@ -77,26 +66,6 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 		} catch (Exception e) {
 			System.out.println("Simulation Error: Resetting planet");
 		}
-	}
-
-	public void process() {
-
-		_isPaused = true;
-		if (this.isRunningInOwnThread()) startThread();		
-		else startNoThread();
-	}
-
-	private void startThread() {
-		System.out.println("Starting " +  threadName );
-		if (thread == null)
-		{
-			thread = new Thread(this, threadName);
-			thread.start();
-		}
-	}
-
-	private void startNoThread() {
-		run();
 	}
 
 	@Override
