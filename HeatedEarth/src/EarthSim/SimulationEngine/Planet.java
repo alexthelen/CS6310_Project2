@@ -9,7 +9,7 @@ public class Planet implements TemperatureGrid
 {
 	//Attributes--------------------------
 	private Calendar IDLDateTime;
-	public GridCell[][] planetGrid;
+	private GridCell[][] planetGrid;
 	private double noonLongitude;
 	private int rows;
 	private int columns;
