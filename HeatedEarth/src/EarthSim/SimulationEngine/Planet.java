@@ -227,6 +227,11 @@ public class Planet implements TemperatureGrid
 		else
 			total = 360;
 		
-		return (int)Math.floor(coordinate / this.gridSize) + (total / this.gridSize / 2);
+		int index = (int)Math.floor(coordinate / this.gridSize) + (total / this.gridSize / 2);
+		if (index == 36) {
+			index = 35;
+		}
+		
+		return index;
 	}
 }
