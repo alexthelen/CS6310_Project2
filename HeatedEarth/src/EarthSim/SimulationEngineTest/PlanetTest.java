@@ -5,10 +5,28 @@ import static org.junit.Assert.*;
 import java.util.GregorianCalendar;
 
 import org.junit.Test;
+
+import EarthSim.Presentation.earth.TemperatureGrid;
 import EarthSim.SimulationEngine.*;
+import EarthSim.GUI.DataBuffer;
 
 public class PlanetTest {
 
+	@Test
+	public void testGridSizeIndivisbleBy180() 
+	{
+		try 
+		{
+			SimulationEngine se = new SimulationEngine(new DataBuffer<TemperatureGrid>(), 179, 60, false);
+			assertEquals(90, se.GetGridSize());
+		} 
+		
+		catch (Exception e) 
+		{
+			assertEquals(Constants.invalidLatitudeMessage, e.getMessage());
+		}
+	}
+	
 	@Test
 	public void testGetGridCellInvalidLatitude() 
 	{
@@ -78,7 +96,7 @@ public class PlanetTest {
 			Planet earth = new Planet(10);
 			GridCell cell;
 			
-			for(int i = 0; i < 2400; i++)
+			for(int i = 0; i < 24; i++)
 			{
 				earth.ApplyHeatChange();
 				earth.RotatePlanet(60);
@@ -87,10 +105,10 @@ public class PlanetTest {
 			earth.ApplyHeatChange();
 			
 			cell = earth.GetGridCell(0, 0);	
-			assertTrue(cell.GetOldTemp() < cell.GetTemp());
+			assertTrue(cell.GetOldTemp() > cell.GetTemp());
 					
 			cell = earth.GetGridCell(0, 180);
-			assertTrue(cell.GetOldTemp() > cell.GetTemp());
+			assertTrue(cell.GetOldTemp() < cell.GetTemp());
 			
 		} 
 		catch (Exception e) 

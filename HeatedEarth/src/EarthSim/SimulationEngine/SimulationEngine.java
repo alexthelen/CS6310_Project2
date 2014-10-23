@@ -23,16 +23,24 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 	public void SetMinutesPerRotation(int value) { this._minutesPerRotation = value; }	
 
 	//Constructors------------------------
-	public SimulationEngine(DataBuffer<TemperatureGrid> buffer, int cellSize, int minutesPerRotation, boolean dedicatedThread)
+	public SimulationEngine(DataBuffer<TemperatureGrid> buffer, int gridSize, int minutesPerRotation, boolean dedicatedThread)
 	{
 		_componentType = ComponentType.Simulation;
 		this._buffer = buffer;
-		this._gridSize = cellSize;
 		this._minutesPerRotation = minutesPerRotation;
 		this._isRunning = false;
 		threadName = "SimulationThread";
 		setRunningInOwnThread(dedicatedThread);
-
+		
+		if(gridSize > 180)
+			gridSize = 180;
+		
+		while(180 % gridSize != 0)
+		{
+			gridSize--;
+		}
+		this._gridSize = gridSize;
+		
 		try 
 		{
 			this.earth = new Planet(this._gridSize);
