@@ -18,16 +18,25 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 	public void SetGridSize(int gridSize) {
 		if(gridSize > 180)
 			gridSize = 180;
-		
+
 		if(gridSize < 0)
 			gridSize = 1;
-		
+
 		while(180 % gridSize != 0)
 		{
 			gridSize--;
 		}
 		this._gridSize = gridSize;
+
+		try 
+		{
+			this.earth = new Planet(this._gridSize);
+		} 
+		catch (Exception e) 
+		{
+			System.out.println("Simulation Error: " + e.getMessage());
 		}
+	}
 	public int GetMinutesPerRotation() { return this._minutesPerRotation; }
 	public void SetMinutesPerRotation(int value) { this._minutesPerRotation = value; }	
 
@@ -41,15 +50,7 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 		threadName = "SimulationThread";
 		setRunningInOwnThread(dedicatedThread);
 		this.SetGridSize(15);
-		
-		try 
-		{
-			this.earth = new Planet(this._gridSize);
-		} 
-		catch (Exception e) 
-		{
-			System.out.println("Simulation Error: " + e.getMessage());
-		}
+
 	}	
 
 	@Override

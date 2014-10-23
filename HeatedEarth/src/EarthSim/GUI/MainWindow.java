@@ -187,12 +187,12 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 
 		// END TEMPORARY
 		
-		final DataBuffer<TemperatureGrid> buffer = new DataBuffer<TemperatureGrid>(parser.getBufferLength());
+		DataBuffer<TemperatureGrid> buffer = new DataBuffer<TemperatureGrid>(parser.getBufferLength());
 
 		simulation = new SimulationEngine(buffer, parser.simulationShouldRunInOwnThread());							
 		presentation = new Presentation(buffer, new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600), parser.presentationShouldRunInOwnThread());
 
-		presentation.getEarthPanel().setBounds(5, 0, 800, 515);
+		presentation.getEarthPanel().setBounds(5, 0, 800, 510);
 		getContentPane().add(presentation.getEarthPanel());
 
 		if(parser.getInitiative() == ComponentType.Presentation) {
@@ -221,8 +221,8 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 			System.out.println("Error: " + e.getMessage());
 		}			
 
-		presentation.process();				
-		simulation.process();				
+		//presentation.process();				
+		//simulation.process();				
 	}
 
 
@@ -284,6 +284,9 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		// Set simulation parameters
 		simulation.SetGridSize(Integer.parseInt(tfGridSpacing.getText()));
 		simulation.SetMinutesPerRotation(Integer.parseInt(tfTimeStep.getText()));
+		
+		simulation.process();
+		presentation.process();
 
 		// Start the simulation		
 		simulation.Start();
@@ -363,7 +366,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		btnResume.setEnabled(false);
 
 		_state = GUIState.IDLE;
-
+		
 	}
 
 	/**
