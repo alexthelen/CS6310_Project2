@@ -1,7 +1,9 @@
 package EarthSim.Presentation.earth;
 import java.awt.Component;
 import java.awt.Dimension;
+
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -12,6 +14,8 @@ import javax.swing.JPanel;
 public class EarthPanel extends JPanel {
 
   private static final long serialVersionUID = -1108120537851962997L;  
+  private JLabel timeElapsedLabel;
+  private int minutesElapsed;
   private SunDisplay sunDisplay;
   private EarthGridDisplay earth;
   private static final int DEFAULT_GRID_SPACING = 15; //degrees
@@ -30,6 +34,15 @@ public class EarthPanel extends JPanel {
     setMinimumSize(minSize);
     setMaximumSize(maxSize);
     setPreferredSize(prefSize);
+    
+    minutesElapsed = 0;
+    
+    timeElapsedLabel = new JLabel();
+    timeElapsedLabel.setText("Time Elapsed: 0 min");
+    timeElapsedLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    timeElapsedLabel.setAlignmentY(Component.TOP_ALIGNMENT);
+    
+    add(timeElapsedLabel);
     
     earth = new EarthGridDisplay(DEFAULT_GRID_SPACING);
     earth.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -88,6 +101,59 @@ public class EarthPanel extends JPanel {
     sunDisplay.reset();
     earth.reset();
     repaint();
+
+    minutesElapsed = 0;
+    timeElapsedLabel.setText("Time Elapsed: 0 min");
+  }
+  
+  public void increaseTimeElapsed(int minutes) {
+	  minutesElapsed += minutes;
+	  
+	  int minutesElapsedAux = minutesElapsed;
+	  int hoursElapsed = 0;
+	  int daysElapsed = 0;
+	  
+	  if (minutesElapsedAux > 60) {
+		  hoursElapsed = minutesElapsedAux / 60;
+		  minutesElapsedAux = minutesElapsedAux % 60;
+		  
+		  if (hoursElapsed > 24) {
+			  daysElapsed = hoursElapsed / 24;
+			  hoursElapsed = hoursElapsed % 24;
+		  }
+	  }
+	  
+	  String text = "Time Elapsed: ";
+	  
+	  if (daysElapsed > 0) {
+		  text += daysElapsed + " day";
+		  
+		  if (daysElapsed > 1) {
+			  text += "s";
+		  }
+		  
+		  text += " ";
+	  }
+	  
+	  if (hoursElapsed > 0) {
+		  text += hoursElapsed + " hour";
+		  
+		  if (hoursElapsed > 1) {
+			  text += "s";
+		  }
+		  
+		  text += " ";
+	  }
+	  
+	  if (minutesElapsedAux > 0) {
+		  text += minutesElapsedAux + " minute";
+		  
+		  if (minutesElapsedAux > 1) {
+			  text += "s";
+		  }
+	  }
+	  
+	  timeElapsedLabel.setText(text);
   }
   
   /**

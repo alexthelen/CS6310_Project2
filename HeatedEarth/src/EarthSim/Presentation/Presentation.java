@@ -5,8 +5,6 @@ package EarthSim.Presentation;
 
 import java.awt.Dimension;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-
 import EarthSim.ComponentType;
 import EarthSim.FinalTemperatureGrid;
 import EarthSim.ProcessingComponent;
@@ -27,8 +25,8 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	private static final float DEGREES_PER_MINUTE = (float)0.25;
 	
 	private final EarthPanel _earthPanel;		
-	private int _simulationTimeStep;
-	private float _degreesPerIteration;
+	private int _simulationTimeStep = 1;
+	private float _degreesPerIteration = DEGREES_PER_MINUTE;
 	private float _displayRate = (float)0.01;
 	private float _displayRateMillis = 10;
 	private long _millisecondsOnLastRefresh;
@@ -74,7 +72,7 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	@Override
 	public void Stop() {
 		_isPaused = true;
-		this.updateGrid(new FinalTemperatureGrid());		
+		_earthPanel.reset();	
 	}
 
 	@Override
@@ -130,7 +128,8 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	 */
 	public void updateGrid(TemperatureGrid grid) {		
 		_earthPanel.updateGrid(grid);
-		_earthPanel.moveSunPosition(_degreesPerIteration);				
+		_earthPanel.moveSunPosition(_degreesPerIteration);
+		_earthPanel.increaseTimeElapsed(getSimulationTimeStep());
 	}
 
 	@Override

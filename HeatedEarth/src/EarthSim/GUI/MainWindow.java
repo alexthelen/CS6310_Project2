@@ -280,6 +280,9 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 	 * Starts the simulation
 	 */
 	private void startSimulation() {
+		// Set presentation parameters
+		presentation.setDisplayRate(Integer.parseInt(tfDisplayRate.getText()));
+		presentation.setSimulationTimeStep(Integer.parseInt(tfTimeStep.getText()));
 		
 		// Set simulation parameters
 		simulation.SetGridSize(Integer.parseInt(tfGridSpacing.getText()));
