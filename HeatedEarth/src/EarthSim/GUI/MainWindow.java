@@ -99,6 +99,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		getContentPane().add(jLabel3);
 		tfDisplayRate = new javax.swing.JTextField();
 		tfDisplayRate.setBounds(695, 505, 100, 28);
+		tfDisplayRate.setText("0");
 		getContentPane().add(tfDisplayRate);
 		jLabel2 = new javax.swing.JLabel();
 		jLabel2.setBounds(5, 545, 137, 16);
