@@ -27,6 +27,11 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	private static final float DEGREES_PER_MINUTE = (float)0.25;
 	
 	private final EarthPanel _earthPanel;		
+	private int _simulationTimeStep;
+	private float _degreesPerIteration;
+	private float _displayRate = (float)0.01;
+	private float _displayRateMillis = 10;
+	private long _millisecondsOnLastRefresh;
 
 	public int getSimulationTimeStep() {
 		return _simulationTimeStep;
