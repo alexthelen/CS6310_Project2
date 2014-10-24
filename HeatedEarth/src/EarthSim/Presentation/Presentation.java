@@ -5,6 +5,8 @@ package EarthSim.Presentation;
 
 import java.awt.Dimension;
 
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 import EarthSim.ComponentType;
 import EarthSim.FinalTemperatureGrid;
 import EarthSim.ProcessingComponent;
@@ -22,10 +24,35 @@ import EarthSim.Presentation.earth.TemperatureGrid;
  *
  */
 public class Presentation extends ProcessingComponent implements ProcessingComponentListener {
+	private static final float DEGREES_PER_MINUTE = (float)0.25;
+	
 	private final EarthPanel _earthPanel;		
 	private DataBuffer<TemperatureGrid> _buffer;
 	private boolean _isRunning = false;
 	private boolean _isPaused = false;
+	private int _simulationTimeStep;
+	private float _degreesPerIteration;
+	private float _displayRate = (float)0.01;
+	private float _displayRateMillis = 10;
+	private long _millisecondsOnLastRefresh;
+
+	public int getSimulationTimeStep() {
+		return _simulationTimeStep;
+	}
+
+	public void setSimulationTimeStep(int _simulationTimeStep) {
+		this._simulationTimeStep = _simulationTimeStep;
+		_degreesPerIteration = DEGREES_PER_MINUTE * (float)_simulationTimeStep;
+	}
+
+	public float getDisplayRate() {
+		return _displayRate;
+	}
+
+	public void setDisplayRate(float _displayRate) {
+		this._displayRate = _displayRate;
+		this._displayRateMillis = _displayRate * 1000;
+	}
 
 	/**
 	 * @return the {@link EarthPanel} being displayed
@@ -109,7 +136,17 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 				try {
 					newGrid = _buffer.Pull();
 					System.out.println("Presentation: Pulling data from buffer");
+
+					long difference = System.currentTimeMillis() - _millisecondsOnLastRefresh;
+					
+					if (_displayRateMillis > difference) {
+						Thread.sleep((long) (_displayRateMillis - difference));
+					} else {
+						System.out.println(difference);
+					}
+					
 					this.updateGrid(newGrid);
+					_millisecondsOnLastRefresh = System.currentTimeMillis();
 				} catch (Exception ex) {
 					System.out.println("Presentation Error: " + ex.getMessage());
 				}
@@ -127,7 +164,7 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	 */
 	public void updateGrid(TemperatureGrid grid) {		
 		_earthPanel.updateGrid(grid);
-		_earthPanel.moveSunPosition((float)0.25);				
+		_earthPanel.moveSunPosition(_degreesPerIteration);				
 	}
 
 	@Override
