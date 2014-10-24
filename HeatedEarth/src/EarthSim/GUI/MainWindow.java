@@ -120,10 +120,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		btnStart.setBounds(458, 539, 75, 29);
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				//validateInput();
-
-				startSimulation();
+				if(validateInput()) startSimulation();
 			}
 		});
 
@@ -142,10 +139,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		btnResume = new javax.swing.JButton();
 		btnResume.setBounds(623, 539, 88, 29);
 		btnResume.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				//validateInput();
-
+			public void actionPerformed(ActionEvent e) {				
 				resumeSimulation();
 			}
 		});
@@ -392,12 +386,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		if(!isValidInt(tfTimeStep.getText())) {
 			JOptionPane.showMessageDialog(null, "Time step must be a valid integer value");
 			return false;
-		}
-
-		// Check for valid business logic input
-		if(Integer.parseInt(tfDisplayRate.getText()) < 0) {
-			//TODO - validate display rate
-		}
+		}	
 
 		if(Integer.parseInt(tfGridSpacing.getText()) < 1 || Integer.parseInt(tfGridSpacing.getText()) > 180) {
 			JOptionPane.showMessageDialog(null, "Grid spacing must be between 1 and 180 degrees");
@@ -410,7 +399,6 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		}
 
 		return true;
-
 	}
 
 	/**
