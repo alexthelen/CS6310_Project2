@@ -3,11 +3,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.lang.Math;
 
-public class Planet 
+import EarthSim.Presentation.earth.TemperatureGrid;
+
+public class Planet implements TemperatureGrid
 {
 	//Attributes--------------------------
 	private Calendar IDLDateTime;
-	public GridCell[][] planetGrid;
+	private GridCell[][] planetGrid;
 	private double noonLongitude;
 	private int rows;
 	private int columns;
@@ -17,18 +19,6 @@ public class Planet
 	public Calendar GetIDLDateTime(){ return this.IDLDateTime; }
 	public int GetGridSize(){return this.gridSize; }
 	
-	/**
-	 * @return the rows
-	 */
-	public int getRows() {
-		return rows;
-	}
-	/**
-	 * @return the columns
-	 */
-	public int getColumns() {
-		return columns;
-	}
 	//Constructors------------------------
 	public Planet(int cellSize) throws Exception
 	{
@@ -43,6 +33,37 @@ public class Planet
 	}	
 	
 	//Public Methods----------------------
+	@Override
+	public double getTemperature(int x, int y) 
+	{	
+		GridCell cell = null;
+		
+		try 
+		{
+			cell = this.planetGrid[x][y];
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		if (cell == null) {
+			return 0;
+		}
+		return cell.GetTemp();
+	}
+
+	@Override
+	public int getLatitudeLength() 
+	{
+		return this.rows;
+	}
+
+	@Override
+	public int getLongitudeLength() 
+	{
+		return this.columns;
+	}
+	
 	public void RotatePlanet(int minutes)
 	{
 		this.IDLDateTime.add(Calendar.MINUTE, minutes);
@@ -97,6 +118,7 @@ public class Planet
 				// calculate solar temp
 				solarTemp = this.RadiateSun(operationCell);
 				
+				//newTemp = (operationCell.GetOldTemp() + solarTemp + coolTemp) / 3;
 				newTemp = (operationCell.GetOldTemp() + solarTemp + neighborTemp + coolTemp) / 4;
 				operationCell.SetTemp(newTemp);
 				
@@ -206,6 +228,6 @@ public class Planet
 		else
 			total = 360;
 		
-		return (int)Math.floor(coordinate / this.gridSize) + (total / this.gridSize / 2);
+		return (int)Math.floor(coordinate / this.gridSize) + (total / this.gridSize / 2);		
 	}
 }

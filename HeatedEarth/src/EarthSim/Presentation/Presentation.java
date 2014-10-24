@@ -27,14 +27,6 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	private static final float DEGREES_PER_MINUTE = (float)0.25;
 	
 	private final EarthPanel _earthPanel;		
-	private DataBuffer<TemperatureGrid> _buffer;
-	private boolean _isRunning = false;
-	private boolean _isPaused = false;
-	private int _simulationTimeStep;
-	private float _degreesPerIteration;
-	private float _displayRate = (float)0.01;
-	private float _displayRateMillis = 10;
-	private long _millisecondsOnLastRefresh;
 
 	public int getSimulationTimeStep() {
 		return _simulationTimeStep;
@@ -74,41 +66,10 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 		_isRunning = false;
 	}
 
-	public void Start() {
-		_isPaused = false;
-	}
-
-	public void Pause() {
-		_isPaused = true;
-	}
-
-	public void Resume() {
-		_isPaused = false;
-	}
-
+	@Override
 	public void Stop() {
 		_isPaused = true;
 		this.updateGrid(new FinalTemperatureGrid());		
-	}
-
-	public void process() {
-
-		_isPaused = true;
-		if (this.isRunningInOwnThread()) startThread();		
-		else startNoThread();
-	}
-
-	private void startThread() {
-		System.out.println("Starting " +  threadName );
-		if (thread == null)
-		{
-			thread = new Thread(this, threadName);
-			thread.start();
-		}
-	}
-
-	private void startNoThread() {
-		run();
 	}
 
 	@Override

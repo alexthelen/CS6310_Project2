@@ -2,8 +2,6 @@ package EarthSim.GUI;
 
 import java.util.ArrayList;
 
-import EarthSim.FinalTemperatureGrid;
-
 public class DataBuffer<T> {
 
 	private ArrayList<T> _buffer;	
