@@ -12,10 +12,12 @@
 # Param =4 : GUI, SE, Pres on seperate thread, SE with initiative
 # Param =5 : GUI, SE, Pres on 1 thread, Pres with initiative
 # Param =6 : GUI, SE, Pres on seperate thread, Pres with initiative
-# Param =7 : 
-# Param =8 : 
-# Param =9 : 
-# Param =10 : 
+# Param =7 : Pres on own thread, GUI initiative
+# Param =8 : Pres on own thread, SE initiative
+# Param =9 : Pres on own thread, Pres initiative
+# Param =10 : SE on own thread, GUI initiative
+# Param =11 : SE on own thread, SE initiative
+# Param =12 : SE on own thread, Pres initiative
 
 cd HeatedEarth
 cd bin
@@ -36,4 +38,16 @@ elif [ $x -eq 5 ]
 then java EarthSim.Demo -r -b$b >> $directory/results_P1.csv
 elif [ $x -eq 6 ] 
 then java EarthSim.Demo -s -p -r -b$b >> $directory/results_P3.csv
+elif [ $x -eq 7 ] 
+then java EarthSim.Demo -s -p -r -b$b >> $directory/results_GUI_P2.csv
+elif [ $x -eq 8 ] 
+then java EarthSim.Demo -s -p -r -b$b >> $directory/results_SE_P2.csv
+elif [ $x -eq 9 ] 
+then java EarthSim.Demo -s -p -r -b$b >> $directory/results_P_P2.csv
+elif [ $x -eq 10 ] 
+then java EarthSim.Demo -s -p -r -b$b >> $directory/results_GUI_SE2.csv
+elif [ $x -eq 11 ] 
+then java EarthSim.Demo -s -p -r -b$b >> $directory/results_SE_SE2.csv
+elif [ $x -eq 12 ] 
+then java EarthSim.Demo -s -p -r -b$b >> $directory/results_P_SE2.csv
 fi
