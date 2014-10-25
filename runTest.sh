@@ -20,15 +20,15 @@ x="$1"
 b="$2"
 
 if [ $x -eq 1 ] 
-then java EarthSim.Demo -b$b >> results_GUI1.txt
+then java EarthSim.Demo -b$b >> results_GUI1.csv
 elif [ $x -eq 2 ] 
-then java EarthSim.Demo -s -p -b$b >> results_GUI3.txt
+then java EarthSim.Demo -s -p -b$b >> results_GUI3.csv
 elif [ $x -eq 3 ] 
-then java EarthSim.Demo -t -b$b >> results_SE1.txt
+then java EarthSim.Demo -t -b$b >> results_SE1.csv
 elif [ $x -eq 4 ] 
-then java EarthSim.Demo -s -p -t -b$b >> results_SE3.txt
+then java EarthSim.Demo -s -p -t -b$b >> results_SE3.csv
 elif [ $x -eq 5 ] 
-then java EarthSim.Demo -r -b$b >> results_P1.txt
+then java EarthSim.Demo -r -b$b >> results_P1.csv
 elif [ $x -eq 6 ] 
-then java EarthSim.Demo -s -p -r -b$b >> results_P3.txt
+then java EarthSim.Demo -s -p -r -b$b >> results_P3.csv
 fi
