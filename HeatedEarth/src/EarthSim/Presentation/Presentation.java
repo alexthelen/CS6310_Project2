@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import EarthSim.ComponentType;
-import EarthSim.FinalTemperatureGrid;
 import EarthSim.ProcessingComponent;
 import EarthSim.ProcessingComponentListener;
 import EarthSim.SimulationTimeListener;

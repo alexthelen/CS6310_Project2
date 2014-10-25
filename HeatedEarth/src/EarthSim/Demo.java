@@ -3,23 +3,7 @@
  */
 package EarthSim;
 
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Random;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-
 import EarthSim.GUI.MainWindow;
-import EarthSim.Presentation.Presentation;
-import EarthSim.Presentation.earth.EarthPanel;
-import EarthSim.Presentation.earth.TemperatureGrid;
-import EarthSim.SimulationEngine.SimulationEngine;
-import EarthSim.GUI.DataBuffer;
 
 /**
  * @author pablo

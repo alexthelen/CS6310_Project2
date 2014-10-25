@@ -136,16 +136,12 @@ public class Parser {
 						
 					} else if (parameterType.equals("b")) {
 						String possibleParameterContent = null;
-						int skipIndex = 0;
 
 						// Check to see if the user put a space in between the named parameter and
 						// the value for it or not. Accept it either way
 						if (arg.length() == 2) {
 							if (args.length > (i + 1)) {
 								possibleParameterContent = args[i + 1];
-
-								// if the user did put a space, we will skip this parameter in the next iteration
-								skipIndex = 1;
 							} else { // this was the last parameter
 								throw new Exception(String.format(Parser.EXCEPTION_EMPTY_PARAMETER_FORMAT, parameterType));
 							}
