@@ -118,12 +118,6 @@ public abstract class ProcessingComponent implements Runnable {
 	public ProcessingComponent() {
 		_listeners = new ArrayList<ProcessingComponentListener>();
 	}
-
-//	@Override
-//	public void run() {
-//		_stayIdle = true;
-//		idle();
-//	}
 	
 	/**
 	 * Stay idle as long as the there is no task at hand

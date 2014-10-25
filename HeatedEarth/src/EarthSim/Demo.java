@@ -31,6 +31,28 @@ public class Demo {
 	 * @param args
 	 */
 	public static void main(final String[] args) {	
+		/* Set the Nimbus look and feel */
+		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+		/* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+		 * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+		 */
+		try {
+			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					javax.swing.UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (ClassNotFoundException ex) {
+			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (InstantiationException ex) {
+			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (IllegalAccessException ex) {
+			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		}
+		//</editor-fold>
 
 		/* Create and display the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
@@ -38,61 +60,5 @@ public class Demo {
 				new MainWindow(args).setVisible(true);
 			}
 		});
-		
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                createAndShowGUI();
-//            }
-//        });
 	}
-
-
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        final JFrame frame = new JFrame("Heated Plate");
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // for window layout
-        Container container = frame.getContentPane();
-        container.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        
-        final EarthPanel earth = new EarthPanel(new Dimension(800, 500), new Dimension(800, 500), new Dimension(800, 500));
-
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy = 0;
-        container.add(earth, c);
-
-        
-        final JButton runButton = new JButton("Randomize");
-        
-        c.gridx = 1;
-        c.gridy = 0;
-        container.add(runButton, c);
-
-        // wire button action
-        runButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				FinalTemperatureGrid grid = new FinalTemperatureGrid();
-		        earth.updateGrid(grid);
-			}
-        	
-        });
-
-        
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
 }

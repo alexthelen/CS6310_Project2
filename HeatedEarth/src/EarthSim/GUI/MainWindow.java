@@ -16,6 +16,7 @@ import ArgumentParser.Parser;
 import EarthSim.ComponentType;
 import EarthSim.FinalTemperatureGrid;
 import EarthSim.ProcessingComponentListener;
+import EarthSim.SimulationTimeListener;
 import EarthSim.Presentation.Presentation;
 import EarthSim.Presentation.earth.TemperatureGrid;
 import EarthSim.SimulationEngine.SimulationEngine;
@@ -187,6 +188,16 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		simulation = new SimulationEngine(buffer, parser.simulationShouldRunInOwnThread());							
 		presentation = new Presentation(buffer, new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600), parser.presentationShouldRunInOwnThread());
 
+		// stop simulation after the maximum allowed time
+		presentation.addSimulationListener(new SimulationTimeListener() {
+
+			@Override
+			public void onSimulationComplete(ComponentType origin) {
+				stopSimulation();
+			}
+			
+		});
+		
 		presentation.getEarthPanel().setBounds(5, 0, 800, 510);
 		getContentPane().add(presentation.getEarthPanel());
 
@@ -220,42 +231,6 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		//simulation.process();				
 	}
 
-
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(final String args[]) {
-		/* Set the Nimbus look and feel */
-		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-		/* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-		 * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-		 */
-		try {
-			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					javax.swing.UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
-			}
-		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		}
-		//</editor-fold>
-
-		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new MainWindow(args).setVisible(true);
-			}
-		});
-	}
-
 	/**
 	 * @return the hasInitiative
 	 */
@@ -275,6 +250,9 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 	 * Starts the simulation
 	 */
 	private void startSimulation() {
+		// record start time
+		startTime = System.nanoTime();
+		
 		// Set presentation parameters
 		presentation.setDisplayRate(Integer.parseInt(tfDisplayRate.getText()));
 		presentation.setSimulationTimeStep(Integer.parseInt(tfTimeStep.getText()));
@@ -345,6 +323,8 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 	 * Stops the simulation
 	 */
 	private void stopSimulation() {
+		// record end time
+		endTime = System.nanoTime();
 
 		// Stop the simulation
 		presentation.Stop();
@@ -354,9 +334,12 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		Runtime runtime = Runtime.getRuntime(); //runtime (runtime?)
 		runtime.gc();
 		long memory = runtime.totalMemory() - runtime.freeMemory();
-		System.out.println("Used memory in bytes is: " + memory);
 
-		//System.out.println("Total simulation time in ms is :" + (endTime - startTime));
+		System.out.println("Max memory in bytes is: " + Runtime.getRuntime().maxMemory());
+		System.out.println("Total memory in bytes is: " + Runtime.getRuntime().totalMemory());
+		System.out.println("Free memory in bytes is: " + Runtime.getRuntime().freeMemory());		
+		System.out.println("Used memory in bytes is: " + memory);
+		System.out.println("Total simulation time in ns is :" + (endTime - startTime));
 
 		btnStart.setEnabled(true);
 		btnPause.setEnabled(false);

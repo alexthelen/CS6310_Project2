@@ -4,11 +4,14 @@
 package EarthSim.Presentation;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 
 import EarthSim.ComponentType;
 import EarthSim.FinalTemperatureGrid;
 import EarthSim.ProcessingComponent;
 import EarthSim.ProcessingComponentListener;
+import EarthSim.SimulationTimeListener;
 import EarthSim.GUI.DataBuffer;
 import EarthSim.Presentation.earth.EarthPanel;
 import EarthSim.Presentation.earth.TemperatureGrid;
@@ -23,7 +26,9 @@ import EarthSim.Presentation.earth.TemperatureGrid;
  */
 public class Presentation extends ProcessingComponent implements ProcessingComponentListener {
 	private static final float DEGREES_PER_MINUTE = (float)0.25;
-	
+	private static final float MAX_RUN_MINUTES = 14400; // 10 days
+
+	private List<SimulationTimeListener> _simulationListeners;
 	private final EarthPanel _earthPanel;		
 	private int _simulationTimeStep = 1;
 	private float _degreesPerIteration = DEGREES_PER_MINUTE;
@@ -57,10 +62,27 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	}
 
 	/**
+	 * Add a listener to the presentation
+	 * 
+	 * @param listener a {@code PresentationListener} containing the functionality to execute when the Presentation has events to dispatch
+	 */
+	public void addSimulationListener(SimulationTimeListener listener) {
+		_simulationListeners.add(listener);
+	}
+	
+	/**
+	 * Remove all listeners
+	 */
+	public void removeSimulationListeners() {
+		_simulationListeners.clear();
+	}
+
+	/**
 	 * <CTOR>
 	 */
 	public Presentation(DataBuffer<TemperatureGrid> buffer, Dimension minSize, Dimension maxSize, Dimension prefSize, boolean dedicatedThread) {
 		super();
+		_simulationListeners = new ArrayList<SimulationTimeListener>();
 		_componentType = ComponentType.Presentation;
 		_buffer = buffer;
 		_earthPanel = new EarthPanel(minSize, maxSize, prefSize);
@@ -125,10 +147,23 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 		_earthPanel.updateGrid(grid);
 		_earthPanel.moveSunPosition(_degreesPerIteration);
 		_earthPanel.increaseTimeElapsed(getSimulationTimeStep());
+		
+		if (_earthPanel.getMinutesElapsed() > MAX_RUN_MINUTES) {
+			this.simulationComplete();
+		}
 	}
 
 	@Override
 	public void onProcessComplete(ComponentType origin) {
 		Present();
+	}
+	
+	/**
+	 * Fire the simulation complete event on all listeners
+	 */
+	protected void simulationComplete() {
+		for (SimulationTimeListener listener : _simulationListeners) {
+			listener.onSimulationComplete(_componentType);
+		}
 	}
 }

@@ -21,6 +21,13 @@ public class EarthPanel extends JPanel {
   private static final int DEFAULT_GRID_SPACING = 15; //degrees
   
   /**
+ * @return the minutesElapsed
+ */
+public int getMinutesElapsed() {
+	return minutesElapsed;
+}
+
+/**
    * Constructor - sets up the panel with the earth and sun display components using a
    * {@link BoxLayout} with {@link BoxLayout#PAGE_AXIS}.
    * 
