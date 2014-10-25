@@ -20,7 +20,7 @@ x="$1"
 b="$2"
 
 if [ $x -eq 1 ] 
-then java EarthSim.Demo -b$b >> results_GUI1.csv
+then java EarthSim.Demo -b$b >> /home/ubuntu/git/CS6310_P2_T11/Reports/"Test Results"/"Grid Spacing_15 Time Step_1"/results_GUI1.csv
 elif [ $x -eq 2 ] 
 then java EarthSim.Demo -s -p -b$b >> results_GUI3.csv
 elif [ $x -eq 3 ] 
