@@ -37,6 +37,8 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 	private Presentation presentation;
 	private boolean _hasInitiative = false;
 
+	private DataBuffer<TemperatureGrid> buffer;
+	
 	long startTime = 0;
 	long endTime = 0;
 	long startPauseTime = 0;
@@ -182,7 +184,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 
 		// END TEMPORARY
 		
-		DataBuffer<TemperatureGrid> buffer = new DataBuffer<TemperatureGrid>(parser.getBufferLength());
+		buffer = new DataBuffer<TemperatureGrid>(parser.getBufferLength());
 
 		simulation = new SimulationEngine(buffer, parser.simulationShouldRunInOwnThread());							
 		presentation = new Presentation(buffer, new Dimension(800, 600), new Dimension(800, 600), new Dimension(800, 600), parser.presentationShouldRunInOwnThread());
@@ -334,6 +336,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		runtime.gc();
 		long memory = runtime.totalMemory() - runtime.freeMemory();
 
+		System.out.println("Max buffer size is: " + buffer.getMaxSize());
 		System.out.println("Max memory in bytes is: " + Runtime.getRuntime().maxMemory());
 		System.out.println("Total memory in bytes is: " + Runtime.getRuntime().totalMemory());
 		System.out.println("Free memory in bytes is: " + Runtime.getRuntime().freeMemory());		

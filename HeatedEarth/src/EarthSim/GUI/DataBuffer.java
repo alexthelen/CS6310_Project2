@@ -7,6 +7,14 @@ public class DataBuffer<T> {
 	private ArrayList<T> _buffer;	
 	private int _capacity = 1;
 	private int _size = 0;
+	private int _maxSize = 0;
+
+	/**
+	 * @return the maxSize
+	 */
+	public int getMaxSize() {
+		return _maxSize;
+	}
 
 	public DataBuffer() {
 		_size = 0;
@@ -33,6 +41,7 @@ public class DataBuffer<T> {
 		_buffer = null;
 		_buffer = new ArrayList<T>(_capacity);	
 		_size = 0;
+		_maxSize = 0;
 	}	
 	
 	public int getSize() {
@@ -46,6 +55,11 @@ public class DataBuffer<T> {
 		_buffer.add(p);
 		_size++;
 		notify();
+		
+		if (_size > _maxSize) {
+			_maxSize = _size;
+		}
+		
 		return false;
 	}		
 	
