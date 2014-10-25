@@ -100,22 +100,16 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 	{		
 		if(!_isPaused) {				
 			this.earth.ApplyHeatChange();		
-			if(this._buffer.isFull()) {
-				System.out.println("Simulation: Buffer full");
-			}
-			else {
+			if(!this._buffer.isFull()) {
 				this._buffer.Put(this.earth);
-				System.out.println("Simulation: Pushing to buffer");
 			}							
 			this.earth.RotatePlanet(this._minutesPerRotation);			
-			System.out.println("Simulation: Processing Complete");
 			this.processingComplete();			
 		}
 	}
 	//Private Methods---------------------
 	@Override
 	public void onProcessComplete(ComponentType origin) {
-		System.out.println("Simulation: No Initiative");
 		try {
 			this.Simulate();
 		} catch (Exception e) {

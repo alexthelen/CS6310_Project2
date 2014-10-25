@@ -99,14 +99,10 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 			if(_buffer != null) {
 				try {
 					newGrid = _buffer.Pull();
-					System.out.println("Presentation: Pulling data from buffer");
-
 					long difference = System.currentTimeMillis() - _millisecondsOnLastRefresh;
 					
 					if (_displayRateMillis > difference) {
 						Thread.sleep((long) (_displayRateMillis - difference));
-					} else {
-						System.out.println(difference);
 					}
 					
 					this.updateGrid(newGrid);
@@ -116,7 +112,6 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 				}
 			}
 
-			System.out.println("Presentation: Processing Complete");
 			this.processingComplete();			
 		}
 	}
@@ -134,7 +129,6 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 
 	@Override
 	public void onProcessComplete(ComponentType origin) {
-		System.out.println("Presentation: No Initiative");
 		Present();
 	}
 }

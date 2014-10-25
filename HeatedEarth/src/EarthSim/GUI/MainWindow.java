@@ -451,7 +451,6 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 	public void onProcessComplete(ComponentType origin) {
 		
 		if(origin == ComponentType.Presentation) {
-			System.out.println("Simulation: No Initiative");
 			try {
 				simulation.Simulate();
 			} catch (Exception e) {
@@ -459,7 +458,6 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 			}
 		}
 		else if(origin == ComponentType.Simulation) {
-			System.out.println("Presentation: No Initiative");
 			presentation.Present();
 		}		
 		

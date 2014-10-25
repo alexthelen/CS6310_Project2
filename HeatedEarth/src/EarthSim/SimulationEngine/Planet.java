@@ -111,22 +111,17 @@ public class Planet implements TemperatureGrid
 			{
 				operationCell = this.GetGridCell(i, j);
 				
-				//solarTemp = operationCell.GetOldTemp() + (this.RadiateSun(operationCell) / avgGridTemp);
 				coolTemp = operationCell.GetOldTemp() + this.LoseHeatToSpace(operationCell, avgGridTemp);
 				neighborTemp = this.DiffuseHeat(operationCell);			
 				
 				// calculate solar temp
 				solarTemp = this.RadiateSun(operationCell);
 				
-				//newTemp = (operationCell.GetOldTemp() + solarTemp + coolTemp) / 3;
 				newTemp = (operationCell.GetOldTemp() + solarTemp + neighborTemp + coolTemp) / 4;
 				operationCell.SetTemp(newTemp);
 				
-//				System.out.println(i + ", " + j + ": " + newTemp);
 			}
 		}
-		
-//		System.out.println("-----------");
 	}
 	
 	public GridCell GetGridCell(int latitude, int longitude) throws Exception

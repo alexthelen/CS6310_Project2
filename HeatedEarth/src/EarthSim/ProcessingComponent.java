@@ -50,7 +50,6 @@ public abstract class ProcessingComponent implements Runnable {
 	}
 
 	private void startThread() {
-		System.out.println("Starting " +  threadName );
 		if (thread == null)
 		{
 			thread = new Thread(this, threadName);
@@ -132,7 +131,6 @@ public abstract class ProcessingComponent implements Runnable {
 	protected void idle() {
 		_stayIdle = true;
 		while (_stayIdle && this.isRunningInOwnThread()) {
-			System.out.println(threadName + ": idle");
 			try {
 				Thread.sleep(IDLE_TIME);
 			} catch (InterruptedException e) {
