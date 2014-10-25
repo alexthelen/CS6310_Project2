@@ -336,12 +336,19 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 		runtime.gc();
 		long memory = runtime.totalMemory() - runtime.freeMemory();
 
+		/*
 		System.out.println("Max buffer size is: " + buffer.getMaxSize());
 		System.out.println("Max memory in bytes is: " + Runtime.getRuntime().maxMemory());
 		System.out.println("Total memory in bytes is: " + Runtime.getRuntime().totalMemory());
 		System.out.println("Free memory in bytes is: " + Runtime.getRuntime().freeMemory());		
 		System.out.println("Used memory in bytes is: " + memory);
 		System.out.println("Total simulation time in ns is :" + (endTime - startTime));
+		*/
+		
+		String results = buffer.getMaxSize() + "," + Runtime.getRuntime().maxMemory() + "," +
+				Runtime.getRuntime().totalMemory() + "," + Runtime.getRuntime().freeMemory() + "," +
+				memory + "," + (endTime - startTime);
+		System.out.println(results);
 
 		btnStart.setEnabled(true);
 		btnPause.setEnabled(false);
