@@ -6,14 +6,17 @@ package EarthSim;
 import EarthSim.Presentation.earth.TemperatureGrid;
 
 /**
- * @author pablo
+ * Clean Temperature Grid used for reset
+ * 
+ * @author Pablo Gallastegui
+ * @version 1
  *
  */
 public class FinalTemperatureGrid implements TemperatureGrid {
 
 	@Override
 	public double getTemperature(int x, int y) {
-		return (y * x);
+		return 188;
 	}
 
 	@Override

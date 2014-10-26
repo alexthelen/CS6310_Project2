@@ -1,5 +1,12 @@
 package EarthSim.SimulationEngine;
 
+/**
+ * Representation of a portion of the earth's surface
+ * 
+ * @author Alexander Thelen
+ * @version 1
+ *
+ */
 public class GridCell 
 {
 	//Attributes--------------------------
@@ -29,6 +36,13 @@ public class GridCell
 	public double GetWestLength(){ return this.eastWestLength; }
 	
 	//Constructors------------------------
+	/**
+	 * <CTOR>
+	 * @param latitudeValue		an {@code int} with the latitude of the cell
+	 * @param longitudeValue	an {@code int} with the longitude of the cell
+	 * @param cellSize			an {@code int} with the degrees of amplitude of the cell
+	 * @throws Exception		When parameters are not valid
+	 */
 	public GridCell(int latitudeValue, int longitudeValue, int cellSize) throws Exception
 	{
 		this.gridSize = cellSize;
@@ -54,6 +68,9 @@ public class GridCell
 	}
 	
 	//Public Methods----------------------
+	/**
+	 * @return an array of 2 {@code int} values specifying the coordinates of the cell neighboring the north bound of the cell.
+	 */
 	public int[] GetNorthNeighborCoordinates()
 	{
 		int northLatitude;
@@ -77,7 +94,10 @@ public class GridCell
 		
 		return new int[] {northLatitude, northLongitude};
 	}
-	
+
+	/**
+	 * @return an array of 2 {@code int} values specifying the coordinates of the cell neighboring the south bound of the cell.
+	 */
 	public int[] GetSouthNeighborCoordinates()
 	{
 		int southLatitude;
@@ -101,7 +121,10 @@ public class GridCell
 		
 		return new int[] {southLatitude, southLongitude};
 	}
-	
+
+	/**
+	 * @return an array of 2 {@code int} values specifying the coordinates of the cell neighboring the east bound of the cell.
+	 */
 	public int[] GetEastNeighborCoordinates()
 	{
 		int eastLatitude= this.latitude;
@@ -114,7 +137,10 @@ public class GridCell
 		
 		return new int[] {eastLatitude, eastLongitude};
 	}
-	
+
+	/**
+	 * @return an array of 2 {@code int} values specifying the coordinates of the cell neighboring the west bound of the cell.
+	 */
 	public int[] GetWestNeighborCoordinates()
 	{
 		int westLatitude= this.latitude;
@@ -127,18 +153,28 @@ public class GridCell
 		
 		return new int[] {westLatitude, westLongitude};
 	}
-	
+
+	/**
+	 * @return a {@code double} specifying the perimeter of the cell
+	 */
 	public double CalculatePerimeter()
 	{
 		return this.northBaseLength + this.southBaseLength + 2 * this.eastWestLength;
 	}
 	
 	//Private Methods---------------------
+	/**
+	 * @return a {@code double} specifying the area of the cell
+	 */
 	private double CalculateSurfaceArea()
 	{	
 		return this.CalculateHeight() * (this.southBaseLength + this.northBaseLength) / 2;
 	}
-	
+
+	/**
+	 * @param lat	an {@code int} containing the latitude of the cell
+	 * @return a {@code double} specifying the length of the base of the cell
+	 */
 	private double CalculateBase(int lat)
 	{
 		lat = Math.abs(lat);
@@ -146,12 +182,18 @@ public class GridCell
 		double circumference = 2 * Math.PI * Constants.earthRadius * Math.cos(radians);
 		return circumference / (360 / this.gridSize);
 	}
-	
+
+	/**
+	 * @return a {@code double} specifying the height of the cell
+	 */
 	private double CalculateHeight()
 	{
 		return Constants.distanceBetweenLatitudeLines * this.gridSize;
 	}
-	
+
+	/**
+	 * @return a {@code double} specifying the legs of the cell
+	 */
 	private double CalculateLegs()
 	{
 		double x;

@@ -1,5 +1,12 @@
 package EarthSim.SimulationEngine;
 
+/**
+ * Constants utilized in the simulation
+ * 
+ * @author Alexander Thelen
+ * @version 1
+ *
+ */
 public class Constants 
 {
 	public final static double degreesPerMinute = 0.25;	//Degrees

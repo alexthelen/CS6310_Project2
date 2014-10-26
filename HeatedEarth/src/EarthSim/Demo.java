@@ -6,13 +6,19 @@ package EarthSim;
 import EarthSim.GUI.MainWindow;
 
 /**
- * @author pablo
+ * Entry class for the simulation. Receives the command
+ * line parameters and presents a GUI.
+ * 
+ * @author TJ Baxter
+ * @version 1
  *
  */
 public class Demo {
 
 	/**
-	 * @param args
+	 * Entry point of program.
+	 * 
+	 * @param args	an array of {@code String} containing the parameters passed from command line.
 	 */
 	public static void main(final String[] args) {	
 		/* Set the Nimbus look and feel */

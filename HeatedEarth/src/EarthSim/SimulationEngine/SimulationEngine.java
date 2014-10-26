@@ -6,6 +6,13 @@ import EarthSim.ProcessingComponentListener;
 import EarthSim.GUI.DataBuffer;
 import EarthSim.Presentation.earth.TemperatureGrid;
 
+/**
+ * Runs a simulation of the distribution of heat on earth
+ * 
+ * @author Alexander Thelen
+ * @version 1
+ *
+ */
 public class SimulationEngine extends ProcessingComponent implements ProcessingComponentListener
 {
 	//Attributes--------------------------
@@ -41,6 +48,11 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 	public void SetMinutesPerRotation(int value) { this._minutesPerRotation = value; }	
 
 	//Constructors------------------------
+	/**
+	 * <CTOR>
+	 * @param buffer 			a {@link DataBuffer} to place the output of the simulation
+	 * @param dedicatedThread	a {@code boolean} specifying if the simulation runs in its own thread
+	 */
 	public SimulationEngine(DataBuffer<TemperatureGrid> buffer, boolean dedicatedThread)
 	{
 		_componentType = ComponentType.Simulation;
@@ -80,6 +92,9 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 	}
 
 	//Public Methods----------------------
+	/**
+	 * Start the simulation
+	 */
 	public void RunSimulation()
 	{
 		try 
@@ -96,6 +111,10 @@ public class SimulationEngine extends ProcessingComponent implements ProcessingC
 		}
 	}	
 
+	/**
+	 * Perform one iteration of the simulation
+	 * @throws Exception thrown when the coordinates of a cell are not valid
+	 */
 	public void Simulate() throws Exception
 	{		
 		if(!_isPaused) {				

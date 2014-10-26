@@ -22,8 +22,10 @@ import EarthSim.Presentation.earth.TemperatureGrid;
 import EarthSim.SimulationEngine.SimulationEngine;
 
 /**
+ * Displays the Graphical User Interface and instantiates all the components necessary
+ * to run the simulation.
  *
- * @author tbaxter
+ * @author TJ Baxter
  */
 public class MainWindow extends javax.swing.JFrame implements ProcessingComponentListener {	
 
@@ -48,6 +50,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 	private GUIState _state = GUIState.IDLE;
 
 	/**
+	 * <CTOR>
 	 * Creates new form MainWindow
 	 */
 	public MainWindow(String[] args) {
@@ -169,6 +172,10 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 
 	}// </editor-fold>
 
+	/**
+	 * Setup the components and their threads based on the command line
+	 *  parameters parsed
+	 */
 	private void setup() {		
 
 		// TEMPORARY FOR TESTING
@@ -233,7 +240,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 	}
 
 	/**
-	 * @return the hasInitiative
+	 * @return a {@code boolean} indicating if this process has the initiative
 	 */
 	private boolean hasInitiative() {
 		return _hasInitiative;
@@ -241,7 +248,7 @@ public class MainWindow extends javax.swing.JFrame implements ProcessingComponen
 
 	/**
 	 * Sets the initiative property
-	 * @param init determines if the initiative is set
+	 * @param init determines if this component has the initiative
 	 */
 	private void setInitiative(boolean init) {
 		_hasInitiative = init;

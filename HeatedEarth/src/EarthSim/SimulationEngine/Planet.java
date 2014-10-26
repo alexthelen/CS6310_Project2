@@ -5,6 +5,13 @@ import java.lang.Math;
 
 import EarthSim.Presentation.earth.TemperatureGrid;
 
+/**
+ * A representation of the temperatures of the planet
+ * 
+ * @author Alexander Thelen
+ * @version 1
+ *
+ */
 public class Planet implements TemperatureGrid
 {
 	//Attributes--------------------------
@@ -20,6 +27,11 @@ public class Planet implements TemperatureGrid
 	public int GetGridSize(){return this.gridSize; }
 	
 	//Constructors------------------------
+	/**
+	 * <CTOR>
+	 * @param cellSize		an {@code int} specifying the degrees of amplitude of each cell
+	 * @throws Exception	thrown when the parameter passed is not valid.
+	 */
 	public Planet(int cellSize) throws Exception
 	{
 		this.gridSize = cellSize;
@@ -64,6 +76,10 @@ public class Planet implements TemperatureGrid
 		return this.columns;
 	}
 	
+	/**
+	 * Change the longitude receiving direct sunlight, based on the amount of simulation minutes passed
+	 * @param minutes	an {@code int} specifying the amount of simulation minutes passed
+	 */
 	public void RotatePlanet(int minutes)
 	{
 		this.IDLDateTime.add(Calendar.MINUTE, minutes);
@@ -74,6 +90,9 @@ public class Planet implements TemperatureGrid
 		
 	}
 	
+	/**
+	 * Clean the grid to start a new simulation
+	 */
 	public void ResetGrid() {
 		this.planetGrid = null;
 		this.planetGrid = new GridCell[this.columns][this.rows];
@@ -84,6 +103,10 @@ public class Planet implements TemperatureGrid
 		}		
 	}
 	
+	/**
+	 * Modify the temperature of each cell of the grid based on sun radiation, dissipation, and cooling
+	 * @throws Exception	thrown when the coordinates specified for a cell are invalid.
+	 */
 	public void ApplyHeatChange() throws Exception
 	{
 		GridCell operationCell;
@@ -124,6 +147,13 @@ public class Planet implements TemperatureGrid
 		}
 	}
 	
+	/**
+	 * Retrieve a cell at a particular latitude and longitude
+	 * @param latitude 		an {@code int} specifying the latitude of the cell to be retrieved
+	 * @param longitude		an {@code int} specifying the longitude of the cell to be retrieved
+	 * @return				the {@link GridCell} at the specified latitude and longitude
+	 * @throws Exception	thrown when the coordinates specified for a cell are invalid
+	 */
 	public GridCell GetGridCell(int latitude, int longitude) throws Exception
 	{
 		if(!(latitude <= 90 && latitude >= -90))
@@ -138,6 +168,10 @@ public class Planet implements TemperatureGrid
 	}
 	
 	//Private Methods---------------------
+	/**
+	 * Initialize the grid with default values
+	 * @throws Exception thrown when the coordinates specified are not valid
+	 */
 	private void InitializeGrid() throws Exception
 	{
 		int latitude = -90;
@@ -156,6 +190,11 @@ public class Planet implements TemperatureGrid
 		}
 	}
 	
+	/**
+	 * Calculate the value of the heat diffused by the cell passed as a parameter and its neighbor cells
+	 * @param cell	the {@link GridCell} whose temperature change by diffusion is being calculated
+	 * @return	a {@code double} containing the new temperature of the cell as affected by diffusion
+	 */
 	private double DiffuseHeat(GridCell cell)
 	{
 		int[] neighbor = cell.GetNorthNeighborCoordinates();
@@ -180,7 +219,12 @@ public class Planet implements TemperatureGrid
 		
 		return northWeight + southWeight + eastWeight + westWeight;
 	}
-	
+
+	/**
+	 * Calculate the value of the heat received by the sun in a cell
+	 * @param cell	the {@link GridCell} whose temperature change by solar radiation is being calculated
+	 * @return	a {@code double} containing the new temperature of the cell as affected by solar radiation
+	 */
 	private double RadiateSun(GridCell cell)
 	{
 		double longitudeFactor;
@@ -200,7 +244,13 @@ public class Planet implements TemperatureGrid
 		
 		return heatFactor * solarTemp;
 	}
-	
+
+	/**
+	 * Calculate the value of the heat lost by the cell passed as a parameter based on average planet temperature
+	 * @param cell			the {@link GridCell} whose temperature change by heat loss is being calculated
+	 * @param avgGridTemp	a {@code double} representing the average temperature of earth
+	 * @return	a {@code double} containing the new temperature of the cell as affected by heat loss
+	 */
 	private double LoseHeatToSpace(GridCell cell, double avgGridTemp)
 	{		
 		double avgGridCellSize = (Constants.surfaceAreaOfEarth / (this.rows * this.columns)) * 1000000;	//Convert to square meters
@@ -209,11 +259,25 @@ public class Planet implements TemperatureGrid
 		return -relativeSizeFactor * relativeTempFactor * Constants.tempSun;
 	}
 	
+	/**
+	 * Calculate the weight of the effects of temperature on a cell by a neighboring
+	 * cell based on the lenght of the side shared
+	 * @param temp		a {@code double} representing the temperature of the cell
+	 * @param length	a {@code double} representing the lenght of the side shared by both cells
+	 * @param cell		the {@link GridCell} for which the impact of the neighboring cell is being calculated
+	 * @return			a {@code double} with the coefficient of impact of the neighboring cell
+	 */
 	private double CalculateHeatWeight(double temp, double length, GridCell cell)
 	{
 		return length / cell.CalculatePerimeter() * temp;
 	}
 	
+	/**
+	 * Convert latitude and longitude to grid indexes
+	 * @param coordinate		an {@code int} containing the latitude or longitude value
+	 * @param latitude			a {@code boolean} specifying if the parameter passed is the latitude
+	 * @return					an {@code int} with the index of the array
+	 */
 	private int ConvertToArrayIndex(int coordinate, boolean latitude)
 	{
 		int total;

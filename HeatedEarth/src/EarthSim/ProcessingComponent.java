@@ -10,7 +10,13 @@ import EarthSim.GUI.DataBuffer;
 import EarthSim.Presentation.earth.TemperatureGrid;
 
 /**
- * @author pablo
+ * Abstract class containing common functionality to run a process either in
+ * a shared or its own thread, referencing data from a buffer and reporting
+ * completed status through listeners
+ * 
+ * @author Pablo Gallastegui
+ * @author TJ Baxter
+ * @version 1
  *
  */
 public abstract class ProcessingComponent implements Runnable {
@@ -26,22 +32,37 @@ public abstract class ProcessingComponent implements Runnable {
 	protected boolean _isRunning;
 	protected boolean _isPaused = false;
 
+	/**
+	 * Start the process
+	 */
 	public void Start() {
 		_isPaused = false;
 	}
 
+	/**
+	 * Pause the process
+	 */
 	public void Pause() {
 		_isPaused = true;
 	}
 
+	/**
+	 * Resume the process from paused
+	 */
 	public void Resume() {
 		_isPaused = false;
 	}
 
+	/**
+	 * Stop the process
+	 */
 	public void Stop() {
 		_isPaused = true;		
 	}
 
+	/**
+	 * Start running the process
+	 */
 	public void process() {
 
 		_isPaused = true;
@@ -49,6 +70,9 @@ public abstract class ProcessingComponent implements Runnable {
 		else startNoThread();
 	}
 
+	/**
+	 * Start running the process in its own thread
+	 */
 	private void startThread() {
 		if (thread == null)
 		{
@@ -57,12 +81,15 @@ public abstract class ProcessingComponent implements Runnable {
 		}
 	}
 
+	/**
+	 * Start running the process in a shared thread
+	 */
 	private void startNoThread() {
 		run();
 	}
 	
 	/**
-	 * @return the hasInitiative
+	 * @return a {@code boolean} indicating if this process has the initiative
 	 */
 	public boolean hasInitiative() {
 		return _hasInitiative;
@@ -70,21 +97,22 @@ public abstract class ProcessingComponent implements Runnable {
 	
 	/**
 	 * Sets the initiative property
-	 * @param init determines if the initiative is set
+	 * @param init determines if this component has the initiative
 	 */
 	public void setInitiative(boolean init) {
 		_hasInitiative = init;
 	}
-	
+
 	/**
-	 * @return the runningInOwnThread
+	 * @return a {@code boolean} indicating if this process is running in its own thread
 	 */
 	public boolean isRunningInOwnThread() {
 		return runningInOwnThread;
 	}
 
 	/**
-	 * @param runningInOwnThread the runningInOwnThread to set
+	 * Sets the value specifying if this process is running in its own thread
+	 * @param runningInOwnThread	A {@code boolean} value indicating if the process is running in its own thread
 	 */
 	public void setRunningInOwnThread(boolean runningInOwnThread) {
 		this.runningInOwnThread = runningInOwnThread;
@@ -115,6 +143,9 @@ public abstract class ProcessingComponent implements Runnable {
 		}
 	}
 	
+	/**
+	 * <CTOR>
+	 */
 	public ProcessingComponent() {
 		_listeners = new ArrayList<ProcessingComponentListener>();
 	}

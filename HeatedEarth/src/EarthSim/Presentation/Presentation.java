@@ -16,11 +16,11 @@ import EarthSim.Presentation.earth.EarthPanel;
 import EarthSim.Presentation.earth.TemperatureGrid;
 
 /**
- * Class to display and update an {@link EarthPanel} in its own thread.
+ * Class to display and update an {@link EarthPanel}.
  * 
  * @author Pablo Gallastegui
  *
- * @version 1.0
+ * @version 1
  *
  */
 public class Presentation extends ProcessingComponent implements ProcessingComponentListener {
@@ -35,19 +35,35 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 	private float _displayRateMillis = 10;
 	private long _millisecondsOnLastRefresh;
 
+	/**
+	 * 
+	 * @return an {@code int} specifying the amount of simulation minutes elapsed between iterations
+	 */
 	public int getSimulationTimeStep() {
 		return _simulationTimeStep;
 	}
 
+	/**
+	 * Set the amount of simulation minutes elapsed between iterations.
+	 * @param _simulationTimeStep	an {@code int} specifying the amount of simulation minutes elapsed between iterations
+	 */
 	public void setSimulationTimeStep(int _simulationTimeStep) {
 		this._simulationTimeStep = _simulationTimeStep;
 		_degreesPerIteration = DEGREES_PER_MINUTE * (float)_simulationTimeStep;
 	}
 
+	/**
+	 * 
+	 * @return a {@code int} float with the amount of seconds in between display refreshes
+	 */
 	public float getDisplayRate() {
 		return _displayRate;
 	}
 
+	/**
+	 * Set the amount of seconds in between display refreshes
+	 * @param _displayRate a {@code int} float with the amount of seconds in between display refreshes
+	 */
 	public void setDisplayRate(float _displayRate) {
 		this._displayRate = _displayRate;
 		this._displayRateMillis = _displayRate * 1000;
@@ -107,12 +123,18 @@ public class Presentation extends ProcessingComponent implements ProcessingCompo
 		}
 	}
 
+	/**
+	 * Start running the presentation
+	 */
 	public void RunPresentation() {
 		while(_isRunning) {
 			Present();
 		}		
 	}	
 
+	/**
+	 * Display an update to the grid
+	 */
 	public void Present() {
 		if(!_isPaused) {
 			TemperatureGrid newGrid = null;
